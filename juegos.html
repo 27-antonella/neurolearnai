@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NeuroLearn AI - Juegos</title>
+
+    <style>
+
+        /* =========================================
+           CONFIGURACIÓN GENERAL
+        ========================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", Arial, sans-serif;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef5ff,
+                    #f8fbff
+                );
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 25px;
+        }
+
+
+        /* =========================================
+           CONTENEDOR
+        ========================================= */
+
+        .contenedor {
+
+            width: 1100px;
+
+            min-height: 90vh;
+
+            background: white;
+
+            border-radius: 28px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 15px 45px
+                rgba(0,0,0,.12);
+        }
+
+
+        /* =========================================
+           BARRA SUPERIOR
+        ========================================= */
+
+        .barra {
+
+            height: 90px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1769ff,
+                    #2878ff,
+                    #1769ff
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 35px;
+
+            color: white;
+        }
+
+
+        .marca {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .logo {
+
+            width: 52px;
+
+            height: 52px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 28px;
+        }
+
+
+        .marca h1 {
+
+            font-size: 25px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           BOTÓN VOLVER
+        ========================================= */
+
+        .volver {
+
+            border: none;
+
+            background: white;
+
+            color: #1769ff;
+
+            padding: 13px 23px;
+
+            border-radius: 14px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+
+        .volver:hover {
+
+            transform: scale(1.05);
+
+            box-shadow:
+                0 5px 15px
+                rgba(0,0,0,.12);
+        }
+
+
+        /* =========================================
+           CONTENIDO
+        ========================================= */
+
+        .contenido {
+
+            padding: 45px 55px 50px;
+
+            text-align: center;
+        }
+
+
+        .titulo {
+
+            font-size: 36px;
+
+            color: #172b4d;
+
+            margin-bottom: 8px;
+        }
+
+
+        .subtitulo {
+
+            color: #64748b;
+
+            font-size: 18px;
+
+            margin-bottom: 40px;
+        }
+
+
+        /* =========================================
+           CUADRÍCULA DE JUEGOS
+        ========================================= */
+
+        .juegos {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 25px;
+
+            max-width: 900px;
+
+            margin: auto;
+        }
+
+
+        /* =========================================
+           TARJETAS
+        ========================================= */
+
+        .tarjeta {
+
+            position: relative;
+
+            min-height: 210px;
+
+            border: none;
+
+            border-radius: 24px;
+
+            padding: 28px;
+
+            text-align: left;
+
+            cursor: pointer;
+
+            background: white;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0,0,0,.09);
+
+            transition:
+                transform .25s,
+                box-shadow .25s;
+
+            overflow: hidden;
+
+            width: 100%;
+        }
+
+
+        .tarjeta:hover {
+
+            transform:
+                translateY(-7px);
+
+            box-shadow:
+                0 15px 32px
+                rgba(0,0,0,.15);
+        }
+
+
+        .tarjeta:active {
+
+            transform:
+                translateY(-2px)
+                scale(.99);
+        }
+
+
+        /* =========================================
+           ICONOS
+        ========================================= */
+
+        .icono {
+
+            width: 75px;
+
+            height: 75px;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 42px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .sopa .icono {
+
+            background: #e6f0ff;
+        }
+
+
+        .pintar .icono {
+
+            background: #fff0df;
+        }
+
+
+        .memoria .icono {
+
+            background: #eee8ff;
+        }
+
+
+        .imagen .icono {
+
+            background: #e3f8ed;
+        }
+
+
+        /* =========================================
+           TEXTO
+        ========================================= */
+
+        .tarjeta h2 {
+
+            color: #172b4d;
+
+            font-size: 23px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .tarjeta p {
+
+            color: #64748b;
+
+            font-size: 15px;
+
+            line-height: 1.5;
+
+            max-width: 400px;
+        }
+
+
+        /* =========================================
+           FLECHA
+        ========================================= */
+
+        .flecha {
+
+            position: absolute;
+
+            right: 25px;
+
+            bottom: 25px;
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 50%;
+
+            background: #edf4ff;
+
+            color: #1769ff;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            transition: .25s;
+        }
+
+
+        .tarjeta:hover .flecha {
+
+            background: #1769ff;
+
+            color: white;
+
+            transform: translateX(4px);
+        }
+
+
+        /* =========================================
+           MENSAJE INFERIOR
+        ========================================= */
+
+        .mensaje {
+
+            margin-top: 35px;
+
+            color: #64748b;
+
+            font-size: 15px;
+        }
+
+
+        .mensaje strong {
+
+            color: #1769ff;
+        }
+
+
+        /* =========================================
+           ANIMACIÓN
+        ========================================= */
+
+        @keyframes aparecer {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(15px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+
+        .tarjeta {
+
+            animation:
+                aparecer .5s ease;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media(max-width: 750px) {
+
+            body {
+
+                padding: 0;
+
+                align-items: flex-start;
+            }
+
+
+            .contenedor {
+
+                width: 100%;
+
+                min-height: 100vh;
+
+                border-radius: 0;
+            }
+
+
+            .barra {
+
+                padding: 0 18px;
+
+                height: 75px;
+            }
+
+
+            .marca h1 {
+
+                font-size: 19px;
+            }
+
+
+            .logo {
+
+                width: 45px;
+
+                height: 45px;
+
+                font-size: 24px;
+            }
+
+
+            .volver {
+
+                padding: 10px 14px;
+
+                font-size: 14px;
+            }
+
+
+            .contenido {
+
+                padding: 30px 18px;
+            }
+
+
+            .titulo {
+
+                font-size: 28px;
+            }
+
+
+            .subtitulo {
+
+                font-size: 16px;
+
+                margin-bottom: 30px;
+            }
+
+
+            .juegos {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .tarjeta {
+
+                min-height: 200px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="contenedor">
+
+
+    <!-- =====================================
+         BARRA SUPERIOR
+    ====================================== -->
+
+    <header class="barra">
+
+        <div class="marca">
+
+            <div class="logo">
+                🧠
+            </div>
+
+            <h1>
+                NeuroLearn AI
+            </h1>
+
+        </div>
+
+
+        <button
+            class="volver"
+            onclick="volver()">
+
+            ← Volver
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================
+         CONTENIDO
+    ====================================== -->
+
+    <main class="contenido">
+
+
+        <h1 class="titulo">
+
+            🎮 Juegos de aprendizaje
+
+        </h1>
+
+
+        <p class="subtitulo">
+
+            Aprendé, jugá y divertite mientras descubrís cosas nuevas ✨
+
+        </p>
+
+
+
+        <!-- =================================
+             JUEGOS
+        ================================== -->
+
+        <section class="juegos">
+
+
+            <!-- =================================
+                 SOPA DE ANIMALES
+            ================================== -->
+
+            <button
+                class="tarjeta sopa"
+                onclick="abrirSopa()">
+
+                <div class="icono">
+                    🧩
+                </div>
+
+
+                <h2>
+                    Sopa de animales
+                </h2>
+
+
+                <p>
+
+                    Buscá los nombres de los animales
+                    usando imágenes como pistas.
+
+                </p>
+
+
+                <div class="flecha">
+                    →
+                </div>
+
+            </button>
+
+
+
+            <!-- =================================
+                 PINTA POR NÚMEROS
+            ================================== -->
+
+            <button
+                class="tarjeta pintar"
+                onclick="abrirPinta()">
+
+                <div class="icono">
+                    🎨
+                </div>
+
+
+                <h2>
+                    Pinta por números
+                </h2>
+
+
+                <p>
+
+                    Completá dibujos sencillos
+                    siguiendo los números y colores.
+
+                </p>
+
+
+                <div class="flecha">
+                    →
+                </div>
+
+            </button>
+
+
+
+            <!-- =================================
+                 MEMORIA VISUAL
+            ================================== -->
+
+            <button
+                class="tarjeta memoria"
+                onclick="abrirMemoria()">
+
+                <div class="icono">
+                    🧠
+                </div>
+
+
+                <h2>
+                    Memoria visual
+                </h2>
+
+
+                <p>
+
+                    Encontrá las parejas
+                    y ejercitá tu memoria visual.
+
+                </p>
+
+
+                <div class="flecha">
+                    →
+                </div>
+
+            </button>
+
+
+
+            <!-- =================================
+                 ENCONTRÁ LA IMAGEN
+            ================================== -->
+
+            <button
+                class="tarjeta imagen"
+                onclick="abrirImagen()">
+
+                <div class="icono">
+                    👀
+                </div>
+
+
+                <h2>
+                    Encontrá la imagen
+                </h2>
+
+
+                <p>
+
+                    Mirá con atención y elegí
+                    la imagen correcta.
+
+                </p>
+
+
+                <div class="flecha">
+                    →
+                </div>
+
+            </button>
+
+
+        </section>
+
+
+
+        <p class="mensaje">
+
+            🌟 Cada juego está diseñado para
+
+            <strong>
+                aprender jugando.
+            </strong>
+
+        </p>
+
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+
+    /* =====================================
+       VOLVER A APRENDIZAJE
+    ===================================== */
+
+    function volver() {
+
+        window.location.href =
+            "aprendizaje.html";
+
+    }
+
+
+
+    /* =====================================
+       SOPA DE ANIMALES
+    ===================================== */
+
+    function abrirSopa() {
+
+        window.location.href =
+            "sopa-animales.html";
+
+    }
+
+
+
+    /* =====================================
+       PINTA POR NÚMEROS
+    ===================================== */
+
+    function abrirPinta() {
+
+        window.location.href =
+            "pinta-numeros.html";
+
+    }
+
+
+
+    /* =====================================
+       MEMORIA VISUAL
+    ===================================== */
+
+    function abrirMemoria() {
+
+        window.location.href =
+            "memoria-visual.html";
+
+    }
+
+
+
+    /* =====================================
+       ENCONTRÁ LA IMAGEN
+    ===================================== */
+
+    function abrirImagen() {
+
+        window.location.href =
+            "encontrar-imagen.html";
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>
