@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>NeuroLearn AI</title>
+
+    <link rel="stylesheet"
+          href="css/estilos.css">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="chat">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="header">
+
+        <div class="header-left">
+
+            <img
+                src="🤖"
+                alt="NeuroLearn AI"
+                class="logo">
+
+            <div>
+
+                <h1>
+
+                    NeuroLearn AI
+
+                </h1>
+
+                <div class="estado">
+
+                    <span class="online"></span>
+
+                    En línea
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="menu">
+
+            ⋮
+
+        </button>
+
+    </header>
+
+    <!-- ================= MENSAJES ================= -->
+
+    <main
+        id="mensajes"
+        class="mensajes">
+
+        <div class="fecha">
+
+            Hoy
+
+        </div>
+
+        <div class="mensaje bot">
+
+            <img
+                src="🤖"
+                class="avatar">
+
+            <div class="burbuja">
+
+                <strong>
+
+                    👋 Hola.
+
+                </strong>
+
+                <br><br>
+
+                Soy <b>NeuroLearn AI</b>.
+
+                <br><br>
+
+                Estoy listo para ayudarte a aprender de una forma divertida.
+
+                <br><br>
+
+                🌎 Ciencias
+
+                <br>
+
+                📐 Matemática
+
+                <br>
+
+                🧬 Biología
+
+                <br>
+
+                🌌 Universo
+
+                <br>
+
+                📚 Historia
+
+                <br><br>
+
+                ¿Qué te gustaría aprender hoy? 😊
+
+            </div>
+
+        </div>
+        <!-- Los mensajes aparecerán aquí automáticamente -->
+
+        <div
+            id="escribiendo"
+            class="mensaje bot escribiendo"
+            style="display:none;">
+
+            <img
+                src="🤖"
+                class="avatar">
+
+            <div class="burbuja">
+
+                <div class="typing">
+
+                    <span></span>
+
+                    <span></span>
+
+                    <span></span>
+
+                </div>
+
+                <div class="texto-escribiendo">
+
+                    NeuroLearn AI está pensando...
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ================= BARRA INFERIOR ================= -->
+
+    <footer class="footer">
+
+        <div class="barra">
+
+            <button
+                class="icono"
+                title="Emoji">
+
+                😊
+
+            </button>
+
+            <input
+                id="texto"
+                type="text"
+                placeholder="Escribe aquí tu pregunta...">
+
+            <button
+                class="icono"
+                title="Adjuntar">
+
+                📎
+
+            </button>
+
+            <button
+    id="btnEnviar"
+    class="enviar">
+                ➤
+
+            </button>
+
+        </div>
+
+        <div class="aviso">
+
+            <strong>NeuroLearn AI</strong>
+
+            puede cometer errores.
+
+            Verifica siempre la información importante.
+
+        </div>
+
+    </footer>
+    </div>
+
+<script src="js/chat.js"></script>
+
+</body>
+
+</html>

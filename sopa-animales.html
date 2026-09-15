@@ -1,0 +1,1024 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NeuroLearn AI - Sopa de animales</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef5ff, #f8fbff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            color: #17345f;
+        }
+
+        /* ==============================
+                    CONTENEDOR
+        ============================== */
+
+        .juego {
+            width: 100%;
+            max-width: 1050px;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(25, 80, 150, 0.15);
+        }
+
+        /* ==============================
+                    HEADER
+        ============================== */
+
+        .header {
+            background: linear-gradient(135deg, #1769ff, #4388ff);
+            color: white;
+            padding: 22px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+        }
+
+        .volver {
+            border: none;
+            background: rgba(255,255,255,0.18);
+            color: white;
+
+            padding: 12px 20px;
+            border-radius: 15px;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .volver:hover {
+            background: rgba(255,255,255,0.30);
+            transform: translateY(-2px);
+        }
+
+        /* ==============================
+                    TITULO
+        ============================== */
+
+        .contenido {
+            padding: 35px;
+        }
+
+        .titulo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .titulo h1 {
+            font-size: 34px;
+            color: #123d78;
+            margin-bottom: 8px;
+        }
+
+        .titulo p {
+            color: #6680a5;
+            font-size: 17px;
+        }
+
+        /* ==============================
+                    INSTRUCCION
+        ============================== */
+
+        .instruccion {
+            margin: 25px auto;
+            max-width: 700px;
+
+            background: #f1f6ff;
+            border: 2px solid #dbe8ff;
+
+            border-radius: 20px;
+            padding: 18px;
+
+            text-align: center;
+
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* ==============================
+                    ANIMALES
+        ============================== */
+
+        .animales {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+
+            margin-bottom: 30px;
+        }
+
+        .animal {
+            width: 120px;
+            min-height: 120px;
+
+            background: #ffffff;
+            border: 2px solid #e3ecfa;
+
+            border-radius: 20px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            gap: 7px;
+
+            transition: .25s;
+        }
+
+        .animal-imagen {
+            font-size: 45px;
+        }
+
+        .animal-nombre {
+            font-size: 15px;
+            font-weight: bold;
+            color: #52719d;
+        }
+
+        .animal.encontrado {
+            border-color: #43c77a;
+            background: #edfff4;
+            transform: scale(1.03);
+        }
+
+        .animal.encontrado .animal-nombre {
+            color: #15924c;
+        }
+
+        /* ==============================
+                    SOPA
+        ============================== */
+
+        .sopa-contenedor {
+            display: flex;
+            justify-content: center;
+        }
+
+        .sopa {
+            display: grid;
+
+            grid-template-columns: repeat(10, 48px);
+            grid-template-rows: repeat(10, 48px);
+
+            gap: 5px;
+
+            background: #dce9ff;
+            padding: 10px;
+
+            border-radius: 22px;
+
+            user-select: none;
+            touch-action: none;
+        }
+
+        .letra {
+            width: 48px;
+            height: 48px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: white;
+
+            color: #214c83;
+
+            font-size: 20px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: .15s;
+        }
+
+        .letra:hover {
+            background: #e8f1ff;
+            transform: scale(1.05);
+        }
+
+        .letra.seleccionada {
+            background: #4388ff;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .letra.correcta {
+            background: #42c779;
+            color: white;
+        }
+
+        /* ==============================
+                    PROGRESO
+        ============================== */
+
+        .progreso {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .progreso-texto {
+            font-size: 17px;
+            font-weight: bold;
+            color: #52719d;
+        }
+
+        .barra {
+            width: 100%;
+            max-width: 500px;
+            height: 12px;
+
+            margin: 12px auto;
+
+            background: #e6edf8;
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .barra-progreso {
+            height: 100%;
+            width: 0%;
+
+            background: linear-gradient(90deg, #42c779, #6be39a);
+
+            border-radius: 20px;
+
+            transition: .4s;
+        }
+
+        /* ==============================
+                    MENSAJE
+        ============================== */
+
+        .mensaje {
+            min-height: 35px;
+
+            margin-top: 15px;
+
+            text-align: center;
+
+            font-size: 18px;
+            font-weight: bold;
+
+            color: #1769ff;
+        }
+
+        /* ==============================
+                    VICTORIA
+        ============================== */
+
+        .victoria {
+            display: none;
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            background: #effff5;
+            border: 2px solid #bcefd0;
+
+            padding: 25px;
+
+            border-radius: 22px;
+        }
+
+        .victoria.visible {
+            display: block;
+            animation: aparecer .4s ease;
+        }
+
+        .victoria .emoji {
+            font-size: 55px;
+        }
+
+        .victoria h2 {
+            margin: 8px 0;
+            color: #15924c;
+        }
+
+        .victoria p {
+            color: #52719d;
+            margin-bottom: 18px;
+        }
+
+        .boton-reiniciar {
+            border: none;
+
+            background: #1769ff;
+            color: white;
+
+            padding: 13px 25px;
+
+            border-radius: 15px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: .25s;
+        }
+
+        .boton-reiniciar:hover {
+            background: #0755dc;
+            transform: translateY(-2px);
+        }
+
+        /* ==============================
+                    ANIMACION
+        ============================== */
+
+        @keyframes aparecer {
+
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        /* ==============================
+                    RESPONSIVE
+        ============================== */
+
+        @media(max-width: 700px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .contenido {
+                padding: 20px 12px;
+            }
+
+            .titulo h1 {
+                font-size: 27px;
+            }
+
+            .titulo p {
+                font-size: 15px;
+            }
+
+            .header {
+                padding: 18px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+            }
+
+            .volver {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .sopa {
+
+                grid-template-columns: repeat(10, 30px);
+                grid-template-rows: repeat(10, 30px);
+
+                gap: 3px;
+
+                padding: 7px;
+            }
+
+            .letra {
+                width: 30px;
+                height: 30px;
+
+                border-radius: 7px;
+
+                font-size: 14px;
+            }
+
+            .animal {
+                width: 90px;
+                min-height: 95px;
+            }
+
+            .animal-imagen {
+                font-size: 35px;
+            }
+
+            .animal-nombre {
+                font-size: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="juego">
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🧠
+            </div>
+
+            NeuroLearn AI
+
+        </div>
+
+        <button class="volver" onclick="volverJuegos()">
+            ← Volver a juegos
+        </button>
+
+    </header>
+
+
+    <!-- CONTENIDO -->
+
+    <main class="contenido">
+
+        <div class="titulo">
+
+            <h1>🧩 Sopa de animales</h1>
+
+            <p>
+                ¡Usá las pistas y encontrá los animales!
+            </p>
+
+        </div>
+
+
+        <div class="instruccion">
+
+            👀 Mirá las imágenes y buscá sus nombres
+            en la sopa de letras.
+
+        </div>
+
+
+        <!-- ANIMALES -->
+
+        <div class="animales">
+
+            <div class="animal" id="animal-gato">
+
+                <div class="animal-imagen">
+                    🐱
+                </div>
+
+                <div class="animal-nombre">
+                    GATO
+                </div>
+
+            </div>
+
+
+            <div class="animal" id="animal-perro">
+
+                <div class="animal-imagen">
+                    🐶
+                </div>
+
+                <div class="animal-nombre">
+                    PERRO
+                </div>
+
+            </div>
+
+
+            <div class="animal" id="animal-pez">
+
+                <div class="animal-imagen">
+                    🐟
+                </div>
+
+                <div class="animal-nombre">
+                    PEZ
+                </div>
+
+            </div>
+
+
+            <div class="animal" id="animal-RANA">
+
+                <div class="animal-imagen">
+                    🐸
+                </div>
+
+                <div class="animal-nombre">
+                    RANA
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SOPA -->
+
+        <div class="sopa-contenedor">
+
+            <div class="sopa" id="sopa"></div>
+
+        </div>
+
+
+        <!-- PROGRESO -->
+
+        <div class="progreso">
+
+            <div class="progreso-texto">
+
+                Animales encontrados:
+                <span id="contador">0</span> / 4
+
+            </div>
+
+            <div class="barra">
+
+                <div
+                    class="barra-progreso"
+                    id="barraProgreso">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="mensaje" id="mensaje">
+
+            🔎 ¡Buscá tu primer animal!
+
+        </div>
+
+
+        <!-- VICTORIA -->
+
+        <div class="victoria" id="victoria">
+
+            <div class="emoji">
+                🎉
+            </div>
+
+            <h2>¡Excelente trabajo!</h2>
+
+            <p>
+                Encontraste todos los animales.
+                ¡Sos un gran explorador!
+            </p>
+
+            <button
+                class="boton-reiniciar"
+                onclick="nuevoJuego()">
+
+                🔄 Jugar nuevamente
+
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    /* =========================================
+                CONFIGURACIÓN DEL JUEGO
+    ========================================= */
+
+    const palabras = {
+
+        GATO: {
+            fila: 1,
+            columna: 1,
+            direccion: "horizontal"
+        },
+
+        PERRO: {
+            fila: 3,
+            columna: 2,
+            direccion: "horizontal"
+        },
+
+        PEZ: {
+            fila: 5,
+            columna: 5,
+            direccion: "horizontal"
+        },
+
+        RANA: {
+            fila: 7,
+            columna: 4,
+            direccion: "horizontal"
+        }
+
+    };
+
+
+    const letrasBase = [
+
+        ["G","A","T","O","M","S","L","P","E","R"],
+
+        ["B","N","C","D","F","H","I","J","K","L"],
+
+        ["X","P","E","R","R","O","A","T","U","V"],
+
+        ["Q","W","E","R","T","Y","U","I","O","P"],
+
+        ["A","B","C","D","E","P","E","Z","G","H"],
+
+        ["J","K","L","M","N","O","P","Q","R","S"],
+
+        ["T","U","V","W","X","Y","Z","A","B","C"],
+
+        ["D","E","F","R","A","N","A","G","H","I"],
+
+        ["J","K","L","M","N","O","P","Q","R","S"],
+
+        ["T","U","V","W","X","Y","Z","A","B","C"]
+
+    ];
+
+
+    let encontrados = [];
+
+    let seleccion = [];
+
+
+    /* =========================================
+                CREAR SOPA
+    ========================================= */
+
+    function crearSopa() {
+
+        const sopa = document.getElementById("sopa");
+
+        sopa.innerHTML = "";
+
+        encontrados = [];
+
+        seleccion = [];
+
+        document.getElementById("contador").textContent = "0";
+
+        document.getElementById("barraProgreso").style.width = "0%";
+
+        document.getElementById("victoria").classList.remove("visible");
+
+        document.getElementById("mensaje").textContent =
+            "🔎 ¡Buscá tu primer animal!";
+
+
+        document.querySelectorAll(".animal")
+            .forEach(animal => {
+                animal.classList.remove("encontrado");
+            });
+
+
+        for(let fila = 0; fila < 10; fila++) {
+
+            for(let columna = 0; columna < 10; columna++) {
+
+                const boton = document.createElement("button");
+
+                boton.className = "letra";
+
+                boton.textContent =
+                    letrasBase[fila][columna];
+
+                boton.dataset.fila = fila;
+
+                boton.dataset.columna = columna;
+
+                boton.addEventListener(
+                    "click",
+                    seleccionarLetra
+                );
+
+                sopa.appendChild(boton);
+
+            }
+
+        }
+
+    }
+
+
+    /* =========================================
+                SELECCIONAR LETRA
+    ========================================= */
+
+    function seleccionarLetra() {
+
+        const fila =
+            Number(this.dataset.fila);
+
+        const columna =
+            Number(this.dataset.columna);
+
+
+        const existe = seleccion.find(
+            celda =>
+                celda.fila === fila &&
+                celda.columna === columna
+        );
+
+
+        if(existe) {
+
+            return;
+
+        }
+
+
+        seleccion.push({
+            fila,
+            columna,
+            letra: this.textContent
+        });
+
+
+        this.classList.add("seleccionada");
+
+
+        comprobarPalabra();
+
+    }
+
+
+    /* =========================================
+                COMPROBAR PALABRA
+    ========================================= */
+
+    function comprobarPalabra() {
+
+        const palabraSeleccionada =
+            seleccion
+                .map(celda => celda.letra)
+                .join("");
+
+
+        const palabraInversa =
+            seleccion
+                .map(celda => celda.letra)
+                .reverse()
+                .join("");
+
+
+        let encontrada = null;
+
+
+        for(const palabra in palabras) {
+
+            if(
+                palabraSeleccionada === palabra ||
+                palabraInversa === palabra
+            ) {
+
+                encontrada = palabra;
+
+                break;
+
+            }
+
+        }
+
+
+        if(encontrada) {
+
+            marcarPalabra(encontrada);
+
+            return;
+
+        }
+
+
+        /*
+
+        Si la selección supera el tamaño
+        de una palabra, se limpia.
+
+        */
+
+        if(seleccion.length >= 6) {
+
+            limpiarSeleccion();
+
+            document.getElementById("mensaje").textContent =
+                "🔎 Probá con otra combinación.";
+
+        }
+
+    }
+
+
+    /* =========================================
+                MARCAR PALABRA
+    ========================================= */
+
+    function marcarPalabra(palabra) {
+
+        if(encontrados.includes(palabra)) {
+
+            return;
+
+        }
+
+
+        encontrados.push(palabra);
+
+
+        seleccion.forEach(celda => {
+
+            const boton =
+                document.querySelector(
+                    `.letra[data-fila="${celda.fila}"][data-columna="${celda.columna}"]`
+                );
+
+            if(boton) {
+
+                boton.classList.remove("seleccionada");
+
+                boton.classList.add("correcta");
+
+            }
+
+        });
+
+
+        document
+            .getElementById(
+                "animal-" + palabra.toLowerCase()
+            )
+            .classList.add("encontrado");
+
+
+        document.getElementById("contador").textContent =
+            encontrados.length;
+
+
+        const porcentaje =
+            (encontrados.length / 4) * 100;
+
+
+        document.getElementById("barraProgreso")
+            .style.width =
+            porcentaje + "%";
+
+
+        document.getElementById("mensaje").textContent =
+            "⭐ ¡Encontraste " + palabra + "!";
+
+
+        seleccion = [];
+
+
+        if(encontrados.length === 4) {
+
+            terminarJuego();
+
+        }
+
+    }
+
+
+    /* =========================================
+                LIMPIAR SELECCIÓN
+    ========================================= */
+
+    function limpiarSeleccion() {
+
+        document.querySelectorAll(".letra.seleccionada")
+            .forEach(letra => {
+
+                letra.classList.remove("seleccionada");
+
+            });
+
+
+        seleccion = [];
+
+    }
+
+
+    /* =========================================
+                TERMINAR JUEGO
+    ========================================= */
+
+    function terminarJuego() {
+
+        document.getElementById("mensaje").textContent =
+            "🌟 ¡Encontraste todos los animales!";
+
+
+        setTimeout(() => {
+
+            document
+                .getElementById("victoria")
+                .classList.add("visible");
+
+        }, 500);
+
+    }
+
+
+    /* =========================================
+                NUEVO JUEGO
+    ========================================= */
+
+    function nuevoJuego() {
+
+        crearSopa();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* =========================================
+                VOLVER A JUEGOS
+    ========================================= */
+
+    function volverJuegos() {
+
+        window.location.href = "juegos.html";
+
+    }
+
+
+    /* =========================================
+                INICIAR
+    ========================================= */
+
+    crearSopa();
+
+</script>
+
+</body>
+
+</html>
+```

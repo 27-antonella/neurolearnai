@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>NeuroLearn AI - Crear perfil</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+
+    <style>
+
+        /* =====================================
+           GENERAL
+        ===================================== */
+
+        * {
+
+            margin: 0;
+            padding: 0;
+
+            box-sizing: border-box;
+
+            font-family: "Poppins", sans-serif;
+
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #edf4ff,
+                    #f8fbff
+                );
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 25px;
+
+        }
+
+
+        /* =====================================
+           CONTENEDOR
+        ===================================== */
+
+        .contenedor {
+
+            width: 100%;
+
+            max-width: 520px;
+
+        }
+
+
+        /* =====================================
+           TARJETA
+        ===================================== */
+
+        .tarjeta {
+
+            background: white;
+
+            border-radius: 28px;
+
+            padding: 42px;
+
+            box-shadow:
+                0 15px 45px
+                rgba(0, 0, 0, .12);
+
+            text-align: center;
+
+        }
+
+
+        /* =====================================
+           LOGO
+        ===================================== */
+
+        .logo {
+
+            width: 78px;
+
+            height: 78px;
+
+            margin: 0 auto 18px;
+
+            background: #eef4ff;
+
+            border-radius: 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 45px;
+
+        }
+
+
+        /* =====================================
+           TÍTULOS
+        ===================================== */
+
+        .tarjeta h1 {
+
+            color: #172b4d;
+
+            font-size: 31px;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .subtitulo {
+
+            color: #64748b;
+
+            font-size: 16px;
+
+            margin-bottom: 30px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =====================================
+           CAMPOS
+        ===================================== */
+
+        .campo {
+
+            text-align: left;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .campo label {
+
+            display: block;
+
+            color: #334155;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .campo input {
+
+            width: 100%;
+
+            height: 54px;
+
+            border: 2px solid #e2e8f0;
+
+            border-radius: 15px;
+
+            padding: 0 17px;
+
+            outline: none;
+
+            font-size: 16px;
+
+            color: #172b4d;
+
+            background: #fbfdff;
+
+            transition: .2s;
+
+        }
+
+
+        .campo input::placeholder {
+
+            color: #94a3b8;
+
+        }
+
+
+        .campo input:focus {
+
+            border-color: #2878ff;
+
+            background: white;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(40,120,255,.08);
+
+        }
+
+
+        /* =====================================
+           BOTÓN
+        ===================================== */
+
+        .siguiente {
+
+            width: 100%;
+
+            height: 55px;
+
+            margin-top: 8px;
+
+            border: none;
+
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1769ff,
+                    #2878ff
+                );
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: .2s;
+
+        }
+
+
+        .siguiente:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(23,105,255,.25);
+
+        }
+
+
+        .siguiente:active {
+
+            transform: scale(.98);
+
+        }
+
+
+        /* =====================================
+           INFORMACIÓN
+        ===================================== */
+
+        .info {
+
+            margin-top: 22px;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .info strong {
+
+            color: #1769ff;
+
+        }
+
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media(max-width: 600px) {
+
+            body {
+
+                padding: 15px;
+
+            }
+
+
+            .tarjeta {
+
+                padding: 30px 22px;
+
+                border-radius: 24px;
+
+            }
+
+
+            .tarjeta h1 {
+
+                font-size: 27px;
+
+            }
+
+
+            .subtitulo {
+
+                font-size: 15px;
+
+            }
+
+
+            .logo {
+
+                width: 68px;
+
+                height: 68px;
+
+                font-size: 38px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="contenedor">
+
+
+    <div class="tarjeta">
+
+
+        <!-- LOGO -->
+
+        <div class="logo">
+
+            🧠
+
+        </div>
+
+
+        <!-- TÍTULO -->
+
+        <h1>
+
+            Crear mi perfil
+
+        </h1>
+
+
+        <p class="subtitulo">
+
+            Contanos un poquito sobre vos
+            para preparar tu experiencia de aprendizaje ✨
+
+        </p>
+
+
+        <!-- NOMBRE -->
+
+        <div class="campo">
+
+            <label for="nombre">
+
+                👤 Nombre
+
+            </label>
+
+            <input
+                id="nombre"
+                type="text"
+                placeholder="Escribí tu nombre">
+
+        </div>
+
+
+        <!-- EDAD -->
+
+        <div class="campo">
+
+            <label for="edad">
+
+                🎂 Edad
+
+            </label>
+
+            <input
+                id="edad"
+                type="number"
+                placeholder="Escribí tu edad"
+                min="1"
+                max="100">
+
+        </div>
+
+
+        <!-- CORREO -->
+
+        <div class="campo">
+
+            <label for="correo">
+
+                📧 Correo electrónico
+
+            </label>
+
+            <input
+                id="correo"
+                type="email"
+                placeholder="ejemplo@correo.com">
+
+        </div>
+
+
+        <!-- CONTRASEÑA -->
+
+        <div class="campo">
+
+            <label for="password">
+
+                🔒 Contraseña
+
+            </label>
+
+            <input
+                id="password"
+                type="password"
+                placeholder="Creá una contraseña">
+
+        </div>
+
+
+        <!-- BOTÓN -->
+
+        <button
+            class="siguiente"
+            onclick="guardarPerfil()">
+
+            Continuar →
+
+        </button>
+
+
+        <p class="info">
+
+            🔐 Tus datos se utilizarán para
+            personalizar tu experiencia en
+            <strong>NeuroLearn AI</strong>.
+
+        </p>
+
+
+    </div>
+
+</div>
+
+
+<!-- IMPORTANTE:
+     Mantenemos tu JavaScript original -->
+
+<script src="js/perfil.js"></script>
+
+
+</body>
+
+</html>

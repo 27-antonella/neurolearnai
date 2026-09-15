@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NeuroLearn AI - Pinta por números</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background: linear-gradient(
+                135deg,
+                #eef5ff,
+                #f8fbff
+            );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        /* =====================================
+           CONTENEDOR
+        ===================================== */
+
+        .contenedor {
+            width: 1100px;
+            min-height: 90vh;
+
+            background: white;
+
+            border-radius: 28px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 15px 45px rgba(0,0,0,.12);
+        }
+
+        /* =====================================
+           BARRA SUPERIOR
+        ===================================== */
+
+        .barra {
+            height: 85px;
+
+            background: linear-gradient(
+                90deg,
+                #1769ff,
+                #2878ff,
+                #1769ff
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 35px;
+
+            color: white;
+        }
+
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 52px;
+            height: 52px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 27px;
+        }
+
+        .marca h1 {
+            font-size: 24px;
+        }
+
+        .volver {
+            border: none;
+
+            background: white;
+            color: #1769ff;
+
+            padding: 12px 22px;
+
+            border-radius: 14px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .volver:hover {
+            transform: scale(1.05);
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,.12);
+        }
+
+        /* =====================================
+           CONTENIDO
+        ===================================== */
+
+        .contenido {
+            padding: 35px;
+
+            text-align: center;
+        }
+
+        .titulo {
+            color: #172b4d;
+
+            font-size: 34px;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitulo {
+            color: #64748b;
+
+            font-size: 17px;
+
+            margin-bottom: 20px;
+        }
+
+        /* =====================================
+           INSTRUCCIÓN
+        ===================================== */
+
+        .instruccion {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            background: #eef5ff;
+
+            color: #1769ff;
+
+            padding: 12px 20px;
+
+            border-radius: 20px;
+
+            font-weight: bold;
+
+            margin-bottom: 25px;
+        }
+
+        /* =====================================
+           ÁREA DEL JUEGO
+        ===================================== */
+
+        .juego {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 40px;
+
+            flex-wrap: wrap;
+        }
+
+        /* =====================================
+           DIBUJO
+        ===================================== */
+
+        .dibujo {
+            width: 520px;
+            max-width: 100%;
+
+            background: #f8fbff;
+
+            border-radius: 25px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.08);
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+        }
+
+        /* =====================================
+           ZONAS PINTABLES
+        ===================================== */
+
+        .zona {
+            cursor: pointer;
+
+            stroke: #172b4d;
+            stroke-width: 4;
+
+            transition: .2s;
+        }
+
+        .zona:hover {
+            filter: brightness(1.08);
+
+            stroke-width: 6;
+        }
+
+        .zona.correcta {
+            animation: pintarCorrecto .3s ease;
+        }
+
+        @keyframes pintarCorrecto {
+
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.03);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+
+        }
+
+        /* =====================================
+           NÚMEROS DEL DIBUJO
+        ===================================== */
+
+        .numero {
+            pointer-events: none;
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            fill: #172b4d;
+        }
+
+        /* =====================================
+           PANEL DE COLORES
+        ===================================== */
+
+        .panel-colores {
+            width: 270px;
+
+            background: white;
+
+            border-radius: 25px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.08);
+        }
+
+        .panel-colores h2 {
+            color: #172b4d;
+
+            margin-bottom: 10px;
+        }
+
+        .panel-colores p {
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.4;
+
+            margin-bottom: 20px;
+        }
+
+        /* =====================================
+           COLORES
+        ===================================== */
+
+        .colores {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .color {
+            height: 70px;
+
+            border: none;
+
+            border-radius: 18px;
+
+            cursor: pointer;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            color: #172b4d;
+
+            border: 3px solid transparent;
+
+            transition: .2s;
+        }
+
+        .color:hover {
+            transform: scale(1.05);
+        }
+
+        .color.seleccionado {
+            border-color: #1769ff;
+
+            box-shadow:
+                0 0 0 3px rgba(23,105,255,.15);
+
+            transform: scale(1.05);
+        }
+
+        /* =====================================
+           COLORES
+        ===================================== */
+
+        .azul {
+            background: #8ed8ff;
+        }
+
+        .gris {
+            background: #d8d8d8;
+        }
+
+        .amarillo {
+            background: #ffe27a;
+        }
+
+        .rosa {
+            background: #ff9fba;
+        }
+
+        /* =====================================
+           MENSAJE DE COLOR
+        ===================================== */
+
+        .color-elegido {
+            margin-top: 15px;
+
+            min-height: 40px;
+
+            padding: 10px;
+
+            border-radius: 12px;
+
+            background: #f4f7fb;
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        /* =====================================
+           PROGRESO
+        ===================================== */
+
+        .progreso {
+            margin-top: 25px;
+        }
+
+        .progreso-texto {
+            color: #64748b;
+
+            font-size: 15px;
+
+            margin-bottom: 8px;
+        }
+
+        .barra-progreso {
+            width: 100%;
+
+            height: 12px;
+
+            background: #e9eef7;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .progreso-interno {
+            width: 0%;
+
+            height: 100%;
+
+            background: #1769ff;
+
+            transition: .3s;
+        }
+
+        /* =====================================
+           BOTÓN REINICIAR
+        ===================================== */
+
+        .reiniciar {
+            margin-top: 25px;
+
+            border: none;
+
+            background: #1769ff;
+
+            color: white;
+
+            padding: 13px 25px;
+
+            border-radius: 14px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .reiniciar:hover {
+            background: #0056e8;
+        }
+
+        /* =====================================
+           MENSAJE FINAL
+        ===================================== */
+
+        .exito {
+            display: none;
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            background: #e8f9ed;
+
+            color: #17833b;
+
+            border-radius: 18px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+        }
+
+        .exito.mostrar {
+            display: block;
+
+            animation: aparecer .4s ease;
+        }
+
+        /* =====================================
+           MENSAJE ERROR
+        ===================================== */
+
+        .error {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            background: #fff0f0;
+
+            color: #d64545;
+
+            border-radius: 15px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .error.mostrar {
+            display: block;
+        }
+
+        /* =====================================
+           ANIMACIÓN
+        ===================================== */
+
+        @keyframes aparecer {
+
+            from {
+                opacity: 0;
+
+                transform: scale(.9);
+            }
+
+            to {
+                opacity: 1;
+
+                transform: scale(1);
+            }
+
+        }
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media(max-width: 750px) {
+
+            body {
+                padding: 0;
+
+                align-items: flex-start;
+            }
+
+            .contenedor {
+                width: 100%;
+
+                min-height: 100vh;
+
+                border-radius: 0;
+            }
+
+            .barra {
+                padding: 0 18px;
+
+                height: 75px;
+            }
+
+            .marca h1 {
+                font-size: 19px;
+            }
+
+            .logo {
+                width: 45px;
+
+                height: 45px;
+
+                font-size: 24px;
+            }
+
+            .volver {
+                padding: 10px 14px;
+
+                font-size: 14px;
+            }
+
+            .contenido {
+                padding: 25px 15px;
+            }
+
+            .titulo {
+                font-size: 28px;
+            }
+
+            .juego {
+                gap: 20px;
+            }
+
+            .panel-colores {
+                width: 100%;
+
+                max-width: 400px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <!-- =====================================
+         BARRA
+    ====================================== -->
+
+    <header class="barra">
+
+        <div class="marca">
+
+            <div class="logo">
+                🧠
+            </div>
+
+            <h1>
+                NeuroLearn AI
+            </h1>
+
+        </div>
+
+        <button
+            class="volver"
+            onclick="volver()">
+
+            ← Volver
+
+        </button>
+
+    </header>
+
+
+    <!-- =====================================
+         CONTENIDO
+    ====================================== -->
+
+    <main class="contenido">
+
+        <h1 class="titulo">
+            🎨 Pinta por números
+        </h1>
+
+        <p class="subtitulo">
+            Elegí un color y tocá las partes que tienen ese número.
+        </p>
+
+
+        <div class="instruccion">
+            💡 Primero elegí un número y su color
+        </div>
+
+
+        <div class="juego">
+
+            <!-- =====================================
+                 DIBUJO
+            ====================================== -->
+
+            <div class="dibujo">
+
+                <svg
+                    viewBox="0 0 600 450"
+                    xmlns="http://www.w3.org/2000/svg">
+
+                    <!-- FONDO / MAR -->
+
+                    <rect
+                        x="20"
+                        y="20"
+                        width="560"
+                        height="410"
+                        rx="30"
+                        fill="#dff5ff"/>
+
+
+                    <!-- SOL - NÚMERO 3 -->
+
+                    <circle
+                        id="zonaSol"
+                        class="zona"
+                        data-numero="3"
+                        cx="500"
+                        cy="90"
+                        r="45"
+                        fill="#ffffff"/>
+
+                    <text
+                        x="490"
+                        y="100"
+                        class="numero">
+                        3
+                    </text>
+
+
+                    <!-- CUERPO DE LA FOCA - NÚMERO 1 -->
+
+                    <ellipse
+                        id="zonaCuerpo"
+                        class="zona"
+                        data-numero="1"
+                        cx="285"
+                        cy="270"
+                        rx="145"
+                        ry="85"
+                        fill="#ffffff"/>
+
+                    <text
+                        x="275"
+                        y="280"
+                        class="numero">
+                        1
+                    </text>
+
+
+                    <!-- CABEZA - NÚMERO 2 -->
+
+                    <circle
+                        id="zonaCabeza"
+                        class="zona"
+                        data-numero="2"
+                        cx="180"
+                        cy="220"
+                        r="65"
+                        fill="#ffffff"/>
+
+                    <text
+                        x="170"
+                        y="230"
+                        class="numero">
+                        2
+                    </text>
+
+
+                    <!-- ALETA IZQUIERDA - NÚMERO 1 -->
+
+                    <ellipse
+                        id="zonaAletaIzquierda"
+                        class="zona"
+                        data-numero="1"
+                        cx="170"
+                        cy="330"
+                        rx="65"
+                        ry="30"
+                        transform="rotate(-20 170 330)"
+                        fill="#ffffff"/>
+
+
+                    <!-- ALETA DERECHA - NÚMERO 1 -->
+
+                    <ellipse
+                        id="zonaAletaDerecha"
+                        class="zona"
+                        data-numero="1"
+                        cx="390"
+                        cy="330"
+                        rx="65"
+                        ry="30"
+                        transform="rotate(20 390 330)"
+                        fill="#ffffff"/>
+
+
+                    <!-- OJO -->
+
+                    <circle
+                        cx="160"
+                        cy="205"
+                        r="9"
+                        fill="#172b4d"/>
+
+
+                    <!-- NARIZ -->
+
+                    <ellipse
+                        cx="125"
+                        cy="230"
+                        rx="13"
+                        ry="9"
+                        fill="#172b4d"/>
+
+
+                    <!-- PEZ - NÚMERO 4 -->
+
+                    <path
+                        id="zonaPez"
+                        class="zona"
+                        data-numero="4"
+                        d="
+                        M405 250
+                        Q455 210 510 250
+                        Q455 290 405 250
+                        Z"
+                        fill="#ffffff"/>
+
+                    <text
+                        x="455"
+                        y="260"
+                        class="numero">
+                        4
+                    </text>
+
+
+                    <!-- COLA DEL PEZ - NÚMERO 4 -->
+
+                    <path
+                        id="zonaCola"
+                        class="zona"
+                        data-numero="4"
+                        d="
+                        M510 250
+                        L555 215
+                        L545 250
+                        L555 285
+                        Z"
+                        fill="#ffffff"/>
+
+
+                    <!-- BURBUJAS -->
+
+                    <circle
+                        cx="430"
+                        cy="170"
+                        r="12"
+                        fill="white"
+                        stroke="#172b4d"
+                        stroke-width="3"/>
+
+                    <circle
+                        cx="460"
+                        cy="140"
+                        r="8"
+                        fill="white"
+                        stroke="#172b4d"
+                        stroke-width="3"/>
+
+                </svg>
+
+            </div>
+
+
+            <!-- =====================================
+                 PALETA
+            ====================================== -->
+
+            <div class="panel-colores">
+
+                <h2>
+                    🎨 Colores
+                </h2>
+
+                <p>
+                    Elegí el número y su color.
+                    Después buscá ese número en el dibujo.
+                </p>
+
+
+                <div class="colores">
+
+                    <!-- NÚMERO 1 -->
+
+                    <button
+                        class="color azul"
+                        data-color="#8ed8ff"
+                        data-numero="1">
+
+                        🔵 1 - Azul
+
+                    </button>
+
+
+                    <!-- NÚMERO 2 -->
+
+                    <button
+                        class="color gris"
+                        data-color="#d8d8d8"
+                        data-numero="2">
+
+                        ⚪ 2 - Gris
+
+                    </button>
+
+
+                    <!-- NÚMERO 3 -->
+
+                    <button
+                        class="color amarillo"
+                        data-color="#ffe27a"
+                        data-numero="3">
+
+                        🟡 3 - Amarillo
+
+                    </button>
+
+
+                    <!-- NÚMERO 4 -->
+
+                    <button
+                        class="color rosa"
+                        data-color="#ff9fba"
+                        data-numero="4">
+
+                        🩷 4 - Rosa
+
+                    </button>
+
+                </div>
+
+
+                <!-- COLOR ELEGIDO -->
+
+                <div
+                    id="colorElegido"
+                    class="color-elegido">
+
+                    Elegí un número para comenzar 🎨
+
+                </div>
+
+
+                <!-- ERROR -->
+
+                <div
+                    id="error"
+                    class="error">
+
+                    ❌ Ese número no corresponde a esta parte.
+
+                </div>
+
+
+                <!-- PROGRESO -->
+
+                <div class="progreso">
+
+                    <div class="progreso-texto">
+
+                        Progreso:
+
+                        <strong id="contador">
+                            0 / 4
+                        </strong>
+
+                    </div>
+
+
+                    <div class="barra-progreso">
+
+                        <div
+                            id="progresoInterno"
+                            class="progreso-interno">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REINICIAR -->
+
+                <button
+                    class="reiniciar"
+                    onclick="reiniciar()">
+
+                    🔄 Empezar de nuevo
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             MENSAJE FINAL
+        ====================================== -->
+
+        <div
+            id="exito"
+            class="exito">
+
+            🎉 ¡Excelente!
+
+            <br>
+
+            ¡Terminaste el dibujo! 🦭🐟
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    /* =====================================
+       CONFIGURACIÓN
+    ===================================== */
+
+    let numeroSeleccionado = null;
+
+    let colorSeleccionado = null;
+
+    let completadas = new Set();
+
+
+    /* =====================================
+       SELECCIONAR COLOR
+    ===================================== */
+
+    document
+        .querySelectorAll(".color")
+        .forEach(boton => {
+
+            boton.addEventListener("click", () => {
+
+                document
+                    .querySelectorAll(".color")
+                    .forEach(b => {
+
+                        b.classList.remove(
+                            "seleccionado"
+                        );
+
+                    });
+
+
+                boton.classList.add(
+                    "seleccionado"
+                );
+
+
+                numeroSeleccionado =
+                    boton.dataset.numero;
+
+
+                colorSeleccionado =
+                    boton.dataset.color;
+
+
+                document.getElementById(
+                    "colorElegido"
+                ).textContent =
+                    "🎨 Elegiste el número " +
+                    numeroSeleccionado;
+
+
+                document
+                    .getElementById("error")
+                    .classList.remove("mostrar");
+
+            });
+
+        });
+
+
+    /* =====================================
+       PINTAR PARTES
+    ===================================== */
+
+    document
+        .querySelectorAll(".zona")
+        .forEach(zona => {
+
+            zona.addEventListener("click", () => {
+
+                /* Si no eligió color */
+
+                if (!numeroSeleccionado) {
+
+                    alert(
+                        "🎨 Primero elegí un número y un color."
+                    );
+
+                    return;
+
+                }
+
+
+                const numeroZona =
+                    zona.dataset.numero;
+
+
+                /* =================================
+                   COMPROBAR NÚMERO
+                ================================= */
+
+                if (
+                    numeroZona !==
+                    numeroSeleccionado
+                ) {
+
+                    const error =
+                        document.getElementById(
+                            "error"
+                        );
+
+                    error.classList.add(
+                        "mostrar"
+                    );
+
+                    error.textContent =
+                        "❌ Buscá una parte que tenga el número " +
+                        numeroSeleccionado +
+                        ".";
+
+                    return;
+
+                }
+
+
+                /* =================================
+                   PINTAR CORRECTAMENTE
+                ================================= */
+
+                zona.setAttribute(
+                    "fill",
+                    colorSeleccionado
+                );
+
+
+                zona.classList.add(
+                    "correcta"
+                );
+
+
+                /* =================================
+                   COMPROBAR SI YA SE COMPLETÓ
+                   TODO EL NÚMERO
+                ================================= */
+
+                const zonasDelNumero =
+                    document.querySelectorAll(
+                        `.zona[data-numero="${numeroZona}"]`
+                    );
+
+
+                let todasPintadas = true;
+
+
+                zonasDelNumero.forEach(
+                    otraZona => {
+
+                        if (
+                            otraZona.getAttribute(
+                                "fill"
+                            ) === "white" ||
+                            otraZona.getAttribute(
+                                "fill"
+                            ) === "#ffffff"
+                        ) {
+
+                            todasPintadas = false;
+
+                        }
+
+                    }
+                );
+
+
+                if (todasPintadas) {
+
+                    completadas.add(
+                        numeroZona
+                    );
+
+                }
+
+
+                actualizarProgreso();
+
+
+                document
+                    .getElementById("error")
+                    .classList.remove(
+                        "mostrar"
+                    );
+
+            });
+
+        });
+
+
+    /* =====================================
+       PROGRESO
+    ===================================== */
+
+    function actualizarProgreso() {
+
+        const total = 4;
+
+        const cantidad =
+            completadas.size;
+
+
+        document.getElementById(
+            "contador"
+        ).textContent =
+            cantidad + " / " + total;
+
+
+        const porcentaje =
+            (cantidad / total) * 100;
+
+
+        document.getElementById(
+            "progresoInterno"
+        ).style.width =
+            porcentaje + "%";
+
+
+        if (cantidad >= total) {
+
+            document
+                .getElementById("exito")
+                .classList.add("mostrar");
+
+        }
+
+    }
+
+
+    /* =====================================
+       REINICIAR
+    ===================================== */
+
+    function reiniciar() {
+
+        completadas.clear();
+
+        numeroSeleccionado = null;
+
+        colorSeleccionado = null;
+
+
+        /* Quitar selección */
+
+        document
+            .querySelectorAll(".color")
+            .forEach(boton => {
+
+                boton.classList.remove(
+                    "seleccionado"
+                );
+
+            });
+
+
+        /* Restaurar dibujo */
+
+        document
+            .querySelectorAll(".zona")
+            .forEach(zona => {
+
+                zona.setAttribute(
+                    "fill",
+                    "#ffffff"
+                );
+
+                zona.classList.remove(
+                    "correcta"
+                );
+
+            });
+
+
+        document.getElementById(
+            "contador"
+        ).textContent =
+            "0 / 4";
+
+
+        document.getElementById(
+            "progresoInterno"
+        ).style.width =
+            "0%";
+
+
+        document
+            .getElementById("exito")
+            .classList.remove(
+                "mostrar"
+            );
+
+
+        document.getElementById(
+            "error"
+        ).classList.remove(
+            "mostrar"
+        );
+
+
+        document.getElementById(
+            "colorElegido"
+        ).textContent =
+            "Elegí un número para comenzar 🎨";
+
+    }
+
+
+    /* =====================================
+       VOLVER
+    ===================================== */
+
+    function volver() {
+
+        window.location.href =
+            "juegos.html";
+
+    }
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NeuroLearn AI - Aprendizaje</title>
+
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body class="pagina-aprendizaje">
+
+    <div class="contenedor-aprendizaje">
+
+        <!-- BARRA SUPERIOR -->
+        <header class="barra-superior-aprendizaje">
+
+            <div class="marca-aprendizaje">
+                🧠
+                <strong>NeuroLearn AI</strong>
+            </div>
+
+            <div class="titulo-barra-aprendizaje">
+                Tu forma de aprender
+            </div>
+
+            <button class="boton-juegos-aprendizaje" onclick="irAJuegos()">
+                🎮 Juegos
+            </button>
+
+        </header>
+
+
+        <!-- CONTENIDO -->
+        <main class="contenido-aprendizaje">
+
+            <div class="encabezado-aprendizaje">
+
+                <div class="icono-titulo-aprendizaje">
+                    ✨
+                </div>
+
+                <div>
+                    <h1>¿Cómo aprendés mejor?</h1>
+
+                    <p>
+                        Elegí la forma que mejor se adapte a vos.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- SELECCIÓN -->
+            <div class="perfil-seleccionado">
+
+                <span class="check-seleccionado">✓</span>
+
+                <span>Tu forma de aprender:</span>
+
+                <strong id="nombrePerfil">
+                    Ninguna seleccionada
+                </strong>
+
+            </div>
+
+
+            <!-- OPCIONES -->
+            <div class="opciones-aprendizaje">
+
+
+                <button
+                    class="tarjeta-aprendizaje"
+                    onclick="seleccionar(this,'tdah','Atención corta')">
+
+                    <div class="icono-tarjeta atencion">
+                        ⚡
+                    </div>
+
+                    <div class="texto-tarjeta">
+
+                        <h2>Atención corta</h2>
+
+                        <p>
+                            Actividades breves y explicaciones fáciles
+                            para mantener la concentración.
+                        </p>
+
+                    </div>
+
+                    <div class="circulo-seleccion"></div>
+
+                </button>
+
+
+                <button
+                    class="tarjeta-aprendizaje"
+                    onclick="seleccionar(this,'autismo','Autismo')">
+
+                    <div class="icono-tarjeta autismo">
+                        🧩
+                    </div>
+
+                    <div class="texto-tarjeta">
+
+                        <h2>Autismo</h2>
+
+                        <p>
+                            Explicaciones claras, ordenadas y adaptadas
+                            paso a paso.
+                        </p>
+
+                    </div>
+
+                    <div class="circulo-seleccion"></div>
+
+                </button>
+
+
+                <button
+                    class="tarjeta-aprendizaje"
+                    onclick="seleccionar(this,'dislexia','Dislexia')">
+
+                    <div class="icono-tarjeta dislexia">
+                        📖
+                    </div>
+
+                    <div class="texto-tarjeta">
+
+                        <h2>Dislexia</h2>
+
+                        <p>
+                            Textos sencillos, explicaciones cortas
+                            y apoyo visual.
+                        </p>
+
+                    </div>
+
+                    <div class="circulo-seleccion"></div>
+
+                </button>
+
+
+                <button
+                    class="tarjeta-aprendizaje"
+                    onclick="seleccionar(this,'visual','Visual')">
+
+                    <div class="icono-tarjeta visual">
+                        👁️
+                    </div>
+
+                    <div class="texto-tarjeta">
+
+                        <h2>Visual</h2>
+
+                        <p>
+                            Aprende mejor utilizando imágenes,
+                            colores y ejemplos visuales.
+                        </p>
+
+                    </div>
+
+                    <div class="circulo-seleccion"></div>
+
+                </button>
+
+
+                <button
+                    class="tarjeta-aprendizaje"
+                    onclick="seleccionar(this,'lectura','Lectura')">
+
+                    <div class="icono-tarjeta lectura">
+                        📚
+                    </div>
+
+                    <div class="texto-tarjeta">
+
+                        <h2>Lectura</h2>
+
+                        <p>
+                            Información explicada mediante textos,
+                            ejemplos y lecturas.
+                        </p>
+
+                    </div>
+
+                    <div class="circulo-seleccion"></div>
+
+                </button>
+
+
+                <button
+                    class="tarjeta-aprendizaje"
+                    onclick="seleccionar(this,'interactivo','Interactivo')">
+
+                    <div class="icono-tarjeta interactivo">
+                        🎮
+                    </div>
+
+                    <div class="texto-tarjeta">
+
+                        <h2>Interactivo</h2>
+
+                        <p>
+                            Aprende jugando con preguntas,
+                            desafíos y actividades.
+                        </p>
+
+                    </div>
+
+                    <div class="circulo-seleccion"></div>
+
+                </button>
+
+            </div>
+
+
+            <!-- SIGUIENTE -->
+            <button
+                class="boton-siguiente-aprendizaje"
+                onclick="continuar()">
+
+                Siguiente
+
+                <span>→</span>
+
+            </button>
+
+        </main>
+
+    </div>
+
+
+<script>
+
+let perfil = "";
+let nombrePerfil = "";
+
+
+/* =========================
+   SELECCIONAR PERFIL
+========================= */
+
+function seleccionar(boton, tipo, nombre) {
+
+    document
+        .querySelectorAll(".tarjeta-aprendizaje")
+        .forEach(tarjeta => {
+
+            tarjeta.classList.remove("seleccionada");
+
+        });
+
+
+    boton.classList.add("seleccionada");
+
+
+    perfil = tipo;
+    nombrePerfil = nombre;
+
+
+    localStorage.setItem("perfil", tipo);
+    localStorage.setItem("nombrePerfil", nombre);
+
+
+    document.getElementById("nombrePerfil").textContent = nombre;
+
+}
+
+
+/* =========================
+   CONTINUAR
+========================= */
+
+function continuar() {
+
+    if (perfil === "") {
+
+        alert("Elegí una forma de aprender primero 😊");
+
+        return;
+
+    }
+
+    window.location.href = "chat.html";
+
+}
+
+
+/* =========================
+   JUEGOS
+========================= */
+
+function irAJuegos() {
+
+    window.location.href = "juegos.html";
+
+}
+
+
+/* =========================
+   RECUPERAR PERFIL
+========================= */
+
+window.addEventListener("load", function() {
+
+    const perfilGuardado =
+        localStorage.getItem("perfil");
+
+    const nombreGuardado =
+        localStorage.getItem("nombrePerfil");
+
+
+    if (perfilGuardado) {
+
+        perfil = perfilGuardado;
+
+        document
+            .querySelectorAll(".tarjeta-aprendizaje")
+            .forEach(tarjeta => {
+
+                const accion =
+                    tarjeta.getAttribute("onclick");
+
+                if (
+                    accion &&
+                    accion.includes("'" + perfilGuardado + "'")
+                ) {
+
+                    tarjeta.classList.add("seleccionada");
+
+                }
+
+            });
+
+    }
+
+
+    if (nombreGuardado) {
+
+        nombrePerfil = nombreGuardado;
+
+        document.getElementById("nombrePerfil")
+            .textContent = nombreGuardado;
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
