@@ -587,21 +587,13 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
 */
-
 const express = require("express");
 const cors = require("cors");
-const { OpenAI } = require("openai");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-// Configuramos la librería para usar el camino gratuito de OpenRouter
-const openai = new OpenAI({
-    baseURL: "https://openrouter.ai",
-    apiKey: process.env.OPENAI_API_KEY
-});
 
 const PROMPT = `
 Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
@@ -617,24 +609,32 @@ app.post("/preguntar", async (req, res) => {
     try {
         console.log("1️⃣ Enviando petición a OpenRouter Gratis...");
 
-        // Usamos el modelo gratuito oficial de OpenRouter
-        const response = await openai.chat.completions.create({
-            model: "meta-llama/llama-3-8b-instruct:free",
-            messages: [
-                { role: "system", content: PROMPT },
-                { role: "user", content: pregunta }
-            ]
+        // Usamos una llamada directa por fetch para evitar conflictos de librerías
+        const response = await fetch("https://openrouter.ai", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "meta-llama/llama-3-8b-instruct:free",
+                messages: [
+                    { role: "system", content: PROMPT },
+                    { role: "user", content: pregunta }
+                ]
+            })
         });
 
+        const data = await response.json();
         console.log("2️⃣ OpenRouter respondió.");
 
-        // CORREGIDO: Forma segura de leer la respuesta en OpenRouter
-        if (response && response.choices && response.choices[0] && response.choices[0].message) {
-            const respuesta = response.choices[0].message.content;
-            console.log("✅ Respuesta recibida:", respuesta);
-            return res.json({ respuesta: respuesta });
+        if (data && data.choices && data.choices[0] && data.choices[0].message) {
+            const respuestaIA = data.choices[0].message.content;
+            console.log("✅ Respuesta recibida:", respuestaIA);
+            return res.json({ respuesta: respuestaIA });
         } else {
-            throw new Error("La estructura de la respuesta no es la esperada.");
+            console.error("Estructura extraña de OpenRouter:", data);
+            throw new Error("No se encontró el mensaje en la respuesta.");
         }
 
     } catch (error) {
@@ -649,6 +649,7 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
+
 
 
 
