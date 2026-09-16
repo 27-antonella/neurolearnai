@@ -588,7 +588,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
 */
 
-
 const express = require("express");
 const cors = require("cors");
 
@@ -611,13 +610,12 @@ app.post("/preguntar", async (req, res) => {
     try {
         console.log("1️⃣ Enviando petición a Groq Gratis...");
 
-        // Llamada directa al servidor de Groq con todos los headers necesarios
+        // DIRECCIÓN OFICIAL CORREGIDA
         const response = await fetch("https://groq.com", {          
-              method: "POST",
+            method: "POST",
             headers: {
                 "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-                "Content-Type": "application/json",
-                "User-Agent": "NeuroLearnAI/1.0" // Cabecera obligatoria para evitar cortes de conexión
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 model: "llama-3.1-8b-instant",
@@ -628,7 +626,6 @@ app.post("/preguntar", async (req, res) => {
             })
         });
 
-        // Verificamos si la respuesta del servidor es correcta antes de leer el JSON
         if (!response.ok) {
             const textoError = await response.text();
             throw new Error(`Servidor de Groq respondió con código ${response.status}: ${textoError}`);
@@ -658,7 +655,5 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
-
-
 
 
