@@ -229,7 +229,11 @@ app.listen(PORT, () => {
 
 });*/
 
-const express = require("express");
+
+
+
+
+/*const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 
@@ -408,4 +412,125 @@ app.listen(PORT, () => {
     console.log("Esperando preguntas...");
     console.log("========================================");
 
+});*/
+
+const express = require("express");
+const cors = require("cors");
+const { OpenAI } = require("openai");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Inicializar OpenAI usando la variable de entorno que pusimos en Render
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
 });
+
+// =========================================
+// CONFIGURACIÓN DE NEUROLEARN AI
+// =========================================
+
+const PROMPT = `
+Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
+
+Tu objetivo es ayudar a los estudiantes a aprender.
+
+Reglas:
+- Explica de forma sencilla.
+- Usa lenguaje fácil de entender.
+- Da ejemplos cotidianos.
+- Si es matemática, muestra los pasos.
+- Si es ciencia, explica de forma clara.
+- Si es historia, resume los acontecimientos importantes.
+- Si el estudiante no entiende, explica nuevamente de otra manera.
+- Sé amable y motivador.
+- No uses respuestas innecesariamente largas.
+- Responde en un máximo aproximado de 120 palabras.
+`;
+
+// =========================================
+// RECIBIR PREGUNTA DEL CHAT
+// =========================================
+
+app.post("/preguntar", async (req, res) => {
+
+    console.log("========================================");
+    console.log("📨 Pregunta recibida:");
+    console.log(req.body.pregunta);
+    console.log("========================================");
+
+    const pregunta = req.body.pregunta;
+
+    if (!pregunta || pregunta.trim() === "") {
+        return res.json({
+            respuesta: "Por favor escribe una pregunta."
+        });
+    }
+
+    try {
+        console.log("1️⃣ Enviando petición a OpenAI...");
+
+        // Llamada oficial a los modelos de OpenAI (Usamos gpt-4o-mini que es el estándar rápido y económico)
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                { role: "system", content: PROMPT },
+                { role: "user", content: pregunta }
+            ],
+            temperature: 0.4,
+            max_tokens: 200
+        });
+
+        console.log("2️⃣ OpenAI respondió.");
+
+        const respuesta = response.choices[0].message.content;
+
+        console.log("✅ Respuesta recibida:");
+        console.log(respuesta);
+
+        // Enviar respuesta estructurada de vuelta al chat visual
+        res.json({
+            respuesta: respuesta
+        });
+
+    } catch (error) {
+        console.error("========================================");
+        console.error("❌ ERROR OPENAI");
+        console.error("========================================");
+        console.error(error.message);
+
+        res.status(500).json({
+            respuesta: "❌ NeuroLearn AI no pudo obtener una respuesta del servidor de Inteligencia Artificial."
+        });
+    }
+});
+
+// =========================================
+// COMPROBAR SERVIDOR
+// =========================================
+
+app.get("/", (req, res) => {
+    res.send(`
+        <h2>🚀 NeuroLearn AI</h2>
+        <p>Servidor funcionando correctamente.</p>
+        <p>Modelo conectado: <b>GPT-4o-Mini (OpenAI Cloud)</b></p>
+    `);
+});
+
+// =========================================
+// INICIAR SERVIDOR
+// =========================================
+
+// Usamos process.env.PORT porque Render asigna un puerto automático en internet
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log("========================================");
+    console.log("🧠 NeuroLearn AI en producción");
+    console.log(`✅ Servidor listo en el puerto ${PORT}`);
+    console.log("========================================");
+});
+
+
