@@ -90,10 +90,10 @@ async function enviar() {
     // Mostrar "pensando..."
     mostrarEscribiendo();
 
-    try {
+   try {
 
         const respuesta = await fetch(
-            "http://localhost:3000/preguntar",
+            "https://neurolearnai-1.onrender.com",
             {
                 method: "POST",
 
@@ -107,6 +107,7 @@ async function enviar() {
 
             }
         );
+
 
         const datos = await respuesta.json();
         console.log(datos);
