@@ -612,8 +612,8 @@ app.post("/preguntar", async (req, res) => {
         console.log("1️⃣ Enviando petición a Groq Gratis...");
 
         // Llamada directa al servidor de Groq con todos los headers necesarios
-        const response = await fetch("https://groq.com", {
-            method: "POST",
+        const response = await fetch("https://groq.com", {          
+              method: "POST",
             headers: {
                 "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
                 "Content-Type": "application/json",
