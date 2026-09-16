@@ -587,7 +587,8 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
 */
-const express = require("express");
+
+   const express = require("express");
 const cors = require("cors");
 
 const app = express();
@@ -607,17 +608,17 @@ app.post("/preguntar", async (req, res) => {
     }
 
     try {
-        console.log("1️⃣ Enviando petición a OpenRouter Gratis...");
+        console.log("1️⃣ Enviando petición a Groq Gratis...");
 
-        // Usamos una llamada directa por fetch para evitar conflictos de librerías
-        const response = await fetch("https://openrouter.ai", {
+        // Llamada directa al servidor gratuito y ultra rápido de Groq
+        const response = await fetch("https://groq.com", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "deepseek/deepseek-chat:free",
+                model: "llama-3.1-8b-instant", // El modelo gratuito más rápido del mundo
                 messages: [
                     { role: "system", content: PROMPT },
                     { role: "user", content: pregunta }
@@ -626,25 +627,25 @@ app.post("/preguntar", async (req, res) => {
         });
 
         const data = await response.json();
-        console.log("2️⃣ OpenRouter respondió.");
+        console.log("2️⃣ Groq respondió.");
 
         if (data && data.choices && data.choices[0] && data.choices[0].message) {
             const respuestaIA = data.choices[0].message.content;
             console.log("✅ Respuesta recibida:", respuestaIA);
             return res.json({ respuesta: respuestaIA });
         } else {
-            console.error("Estructura extraña de OpenRouter:", data);
-            throw new Error("No se encontró el mensaje en la respuesta.");
+            console.error("Respuesta extraña de Groq:", data);
+            throw new Error("No se encontró el mensaje.");
         }
 
     } catch (error) {
-        console.error("❌ ERROR OPENROUTER:", error.message);
+        console.error("❌ ERROR GROQ:", error.message);
         res.status(500).json({ respuesta: "❌ Error al procesar la respuesta de la IA gratuita." });
     }
 });
 
 app.get("/", (req, res) => {
-    res.send(`<h2>🚀 NeuroLearn AI</h2><p>Servidor gratuito funcionando.</p>`);
+    res.send(`<h2>🚀 NeuroLearn AI</h2><p>Servidor Groq gratuito funcionando.</p>`);
 });
 
 const PORT = process.env.PORT || 3000;
