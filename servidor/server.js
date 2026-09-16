@@ -414,7 +414,7 @@ app.listen(PORT, () => {
 
 });*/
 
-const express = require("express");
+/*const express = require("express");
 const cors = require("cors");
 const { OpenAI } = require("openai");
 
@@ -531,6 +531,61 @@ app.listen(PORT, () => {
     console.log("🧠 NeuroLearn AI en producción");
     console.log(`✅ Servidor listo en el puerto ${PORT}`);
     console.log("========================================");
+});*/
+
+const express = require("express");
+const cors = require("cors");
+const { OpenAI } = require("openai");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Configuramos la librería para usar el camino gratuito de OpenRouter
+const openai = new OpenAI({
+    baseURL: "https://openrouter.ai",
+    apiKey: process.env.OPENAI_API_KEY
 });
+
+const PROMPT = `
+Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
+Reglas: Explica de forma sencilla, da ejemplos cotidianos y sé amable. Responde en un máximo de 120 palabras.
+`;
+
+app.post("/preguntar", async (req, res) => {
+    const pregunta = req.body.pregunta;
+    if (!pregunta || pregunta.trim() === "") {
+        return res.json({ respuesta: "Por favor escribe una pregunta." });
+    }
+
+    try {
+        console.log("1️⃣ Enviando petición a OpenRouter Gratis...");
+
+        // Usamos un modelo excelente que OpenRouter ofrece de forma 100% gratuita
+        const response = await openai.chat.completions.create({
+            model: "meta-llama/llama-3-8b-instruct:free",
+            messages: [
+                { role: "system", content: PROMPT },
+                { role: "user", content: pregunta }
+            ]
+        });
+
+        const respuesta = response.choices[0].message.content;
+        res.json({ respuesta: respuesta });
+
+    } catch (error) {
+        console.error("❌ ERROR OPENROUTER:", error.message);
+        res.status(500).json({ respuesta: "❌ Error en el servidor de IA gratuito." });
+    }
+});
+
+app.get("/", (req, res) => {
+    res.send(`<h2>🚀 NeuroLearn AI</h2><p>Servidor gratuito funcionando.</p>`);
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
+
 
 
