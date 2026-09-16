@@ -93,7 +93,7 @@ async function enviar() {
    try {
 
         const respuesta = await fetch(
-                       "https://neurolearnai-1.onrender.com/preguntar"         
+"https://neurolearnai-1.onrender.com/preguntar",
    {
                 method: "POST",
 
