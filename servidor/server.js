@@ -617,7 +617,7 @@ app.post("/preguntar", async (req, res) => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "meta-llama/llama-3-8b-instruct:free",
+                model: "deepseek/deepseek-chat:free",
                 messages: [
                     { role: "system", content: PROMPT },
                     { role: "user", content: pregunta }
