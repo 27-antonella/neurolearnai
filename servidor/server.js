@@ -588,7 +588,8 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
 */
 
-   const express = require("express");
+
+const express = require("express");
 const cors = require("cors");
 
 const app = express();
@@ -610,21 +611,28 @@ app.post("/preguntar", async (req, res) => {
     try {
         console.log("1️⃣ Enviando petición a Groq Gratis...");
 
-        // Llamada directa al servidor gratuito y ultra rápido de Groq
+        // Llamada directa al servidor de Groq con todos los headers necesarios
         const response = await fetch("https://groq.com", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "User-Agent": "NeuroLearnAI/1.0" // Cabecera obligatoria para evitar cortes de conexión
             },
             body: JSON.stringify({
-                model: "llama-3.1-8b-instant", // El modelo gratuito más rápido del mundo
+                model: "llama-3.1-8b-instant",
                 messages: [
                     { role: "system", content: PROMPT },
                     { role: "user", content: pregunta }
                 ]
             })
         });
+
+        // Verificamos si la respuesta del servidor es correcta antes de leer el JSON
+        if (!response.ok) {
+            const textoError = await response.text();
+            throw new Error(`Servidor de Groq respondió con código ${response.status}: ${textoError}`);
+        }
 
         const data = await response.json();
         console.log("2️⃣ Groq respondió.");
@@ -635,7 +643,7 @@ app.post("/preguntar", async (req, res) => {
             return res.json({ respuesta: respuestaIA });
         } else {
             console.error("Respuesta extraña de Groq:", data);
-            throw new Error("No se encontró el mensaje.");
+            throw new Error("No se encontró el mensaje en los datos.");
         }
 
     } catch (error) {
@@ -645,7 +653,7 @@ app.post("/preguntar", async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.send(`<h2>🚀 NeuroLearn AI</h2><p>Servidor Groq gratuito funcionando.</p>`);
+    res.send(`<h2>🚀 NeuroLearn AI</h2><p>Servidor Groq gratuito funcionando correctamente.</p>`);
 });
 
 const PORT = process.env.PORT || 3000;
