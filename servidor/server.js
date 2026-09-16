@@ -533,7 +533,7 @@ app.listen(PORT, () => {
     console.log("========================================");
 });*/
 
-const express = require("express");
+/*const express = require("express");
 const cors = require("cors");
 const { OpenAI } = require("openai");
 
@@ -577,6 +577,69 @@ app.post("/preguntar", async (req, res) => {
     } catch (error) {
         console.error("❌ ERROR OPENROUTER:", error.message);
         res.status(500).json({ respuesta: "❌ Error en el servidor de IA gratuito." });
+    }
+});
+
+app.get("/", (req, res) => {
+    res.send(`<h2>🚀 NeuroLearn AI</h2><p>Servidor gratuito funcionando.</p>`);
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
+*/
+
+const express = require("express");
+const cors = require("cors");
+const { OpenAI } = require("openai");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Configuramos la librería para usar el camino gratuito de OpenRouter
+const openai = new OpenAI({
+    baseURL: "https://openrouter.ai",
+    apiKey: process.env.OPENAI_API_KEY
+});
+
+const PROMPT = `
+Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
+Reglas: Explica de forma sencilla, da ejemplos cotidianos y sé amable. Responde en un máximo de 120 palabras.
+`;
+
+app.post("/preguntar", async (req, res) => {
+    const pregunta = req.body.pregunta;
+    if (!pregunta || pregunta.trim() === "") {
+        return res.json({ respuesta: "Por favor escribe una pregunta." });
+    }
+
+    try {
+        console.log("1️⃣ Enviando petición a OpenRouter Gratis...");
+
+        // Usamos el modelo gratuito oficial de OpenRouter
+        const response = await openai.chat.completions.create({
+            model: "meta-llama/llama-3-8b-instruct:free",
+            messages: [
+                { role: "system", content: PROMPT },
+                { role: "user", content: pregunta }
+            ]
+        });
+
+        console.log("2️⃣ OpenRouter respondió.");
+
+        // CORREGIDO: Forma segura de leer la respuesta en OpenRouter
+        if (response && response.choices && response.choices[0] && response.choices[0].message) {
+            const respuesta = response.choices[0].message.content;
+            console.log("✅ Respuesta recibida:", respuesta);
+            return res.json({ respuesta: respuesta });
+        } else {
+            throw new Error("La estructura de la respuesta no es la esperada.");
+        }
+
+    } catch (error) {
+        console.error("❌ ERROR OPENROUTER:", error.message);
+        res.status(500).json({ respuesta: "❌ Error al procesar la respuesta de la IA gratuita." });
     }
 });
 
