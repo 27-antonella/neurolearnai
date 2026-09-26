@@ -1,659 +1,239 @@
-/*const express = require("express");
-const cors = require("cors");
-const axios = require("axios");
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-// =========================================
-// CONFIGURACIÓN DEL ASISTENTE
-// =========================================
-
-/*const PROMPT = `
-Eres NeuroLearn AI.
-
-Tu misión es enseñar a niños y adolescentes.
-
-Siempre debes:
-
-- Explicar paso a paso.
-- Usar lenguaje sencillo.
-- Dar ejemplos fáciles.
-- Evitar palabras demasiado técnicas.
-- Si la pregunta es matemática, mostrar el procedimiento.
-- Si es ciencia, explicar con ejemplos cotidianos.
-- Si es historia, resumir claramente.
-- Si el usuario no entiende, volver a explicar de otra forma.
-- Ser amable y motivador.
-- Nunca responder solamente "sí" o "no".
-- Mantener respuestas claras, educativas y fáciles de comprender.
-`;*/
-/*
-const PROMPT = `
-Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
-
-Reglas:
-- Explica de forma sencilla.
-- Usa ejemplos fáciles.
-- Si es matemática, muestra los pasos.
-- Si es ciencia, explica con ejemplos cotidianos.
-- Responde en menos de 200 palabras.
-- Usa un tono amable.
-`;
-
-// =========================================
-// RECIBIR PREGUNTAS
-// =========================================
-
-app.post("/preguntar", async (req, res) => {
-    console.log("================================");
-    console.log("📨 Pregunta recibida:");
-    console.log(req.body.pregunta);
-    console.log("================================");
-
-    try {
-
-        const pregunta = req.body.pregunta;
-
-        if (!pregunta || pregunta.trim() === "") {
-
-            return res.json({
-                respuesta: "Por favor escribe una pregunta."
-            });
-
-        }
-
-       /* console.log("🤖 Modelo: Phi-3 Mini");
-        const respuestaOllama = await axios.post(
-           
-
-           // "http://localhost:11434/api/generate",
-
-     
-    {
-           
-
-            {
-
-                model: "phi3:mini",
-                stream: false,
-
-                prompt: `
-${PROMPT}
-
-Pregunta del estudiante:
-
-${pregunta}
-
-Responde únicamente como NeuroLearn AI.
-`
-
-            },
-
-            {
-
-                timeout: 300000
-                
-
-            }
-
-        );*/
-
- /*   console.log("1️⃣ Enviando petición a Ollama...");
-
-/*const respuestaOllama = await axios.post(
-    "http://127.0.0.1:11434/api/generate",
-    {
-        model: "phi3:mini",
-        stream: false,
-        prompt: `${PROMPT}
-
-Pregunta del estudiante:
-
-${pregunta}
-
-
-
-Responde únicamente como NeuroLearn AI.
-`
-    },
-    {
-        timeout: 300000
-    }
-);*/
-/*const respuestaOllama = await axios({
-
-    method: "post",
-
-    url: "http://127.0.0.1:11434/api/generate",
-
-    timeout: 0,
-
-    headers: {
-
-        "Content-Type": "application/json"
-
-    },
-
-    data: {
-
-        model: "phi3:mini",
-
-        prompt: `${PROMPT}
-
-Pregunta:
-
-${pregunta}`,
-
-        stream: false
-
-    }
-
-});
-
-console.log("2️⃣ Ollama respondió.");
-
-        const respuesta = respuestaOllama.data.response;
-       
-        console.log("✅ Respuesta recibida");
-        console.log(respuesta.substring(0,200));
-
-        res.json({
-
-            respuesta: respuesta
-
-        });
-
-    }
-
-    catch (error) {
-
-        console.error("ERROR OLLAMA:");
-
-        if (error.response) {
-
-            console.error(error.response.data);
-
-        } else {
-
-            console.error(error.message);
-
-        }
-
-        res.status(500).json({
-
-            respuesta:
-            "❌ No pude conectarme con la inteligencia artificial. Verifica que Ollama esté abierto."
-
-        });
-
-    }
-
-});
-
-// =========================================
-// RUTA PRINCIPAL
-// =========================================
-
-app.get("/", (req, res) => {
-
-    res.send(`
-        <h2>🚀 NeuroLearn AI</h2>
-        <p>Servidor funcionando correctamente.</p>
-        <p>Modelo conectado: <b>Phi-3 Mini (Ollama)</b></p>
-        `);
-
-});
-
-// =========================================
-// INICIAR SERVIDOR
-// =========================================
-
-const PORT = 3000;
-
-app.listen(PORT, () => {
-
-    console.clear();
-
-    console.log("========================================");
-    console.log("🧠 NeuroLearn AI");
-    console.log("========================================");
-    console.log("✅ Servidor iniciado correctamente");
-    console.log(`🌐 http://localhost:${PORT}`);
-    console.log("🤖 Modelo: Phi-3 Mini");
-    console.log("========================================");
-    console.log("Esperando preguntas...");
-    console.log("========================================");
-
-});*/
-
-
-
-
-
-/*const express = require("express");
-const cors = require("cors");
-const axios = require("axios");
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-// =========================================
-// CONFIGURACIÓN DE NEUROLEARN AI
-// =========================================
-
-const PROMPT = `
-Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
-
-Tu objetivo es ayudar a los estudiantes a aprender.
-
-Reglas:
-- Explica de forma sencilla.
-- Usa lenguaje fácil de entender.
-- Da ejemplos cotidianos.
-- Si es matemática, muestra los pasos.
-- Si es ciencia, explica de forma clara.
-- Si es historia, resume los acontecimientos importantes.
-- Si el estudiante no entiende, explica nuevamente de otra manera.
-- Sé amable y motivador.
-- No uses respuestas innecesariamente largas.
-- Responde en un máximo aproximado de 120 palabras.
-`;
-
-// =========================================
-// RECIBIR PREGUNTA DEL CHAT
-// =========================================
-
-app.post("/preguntar", async (req, res) => {
-
-    console.log("========================================");
-    console.log("📨 Pregunta recibida:");
-    console.log(req.body.pregunta);
-    console.log("========================================");
-
-    const pregunta = req.body.pregunta;
-
-    if (!pregunta || pregunta.trim() === "") {
-
-        return res.json({
-            respuesta: "Por favor escribe una pregunta."
-        });
-
-    }
-
-    try {
-
-        console.log("1️⃣ Enviando petición a Ollama...");
-
-        const respuestaOllama = await axios.post(
-
-            "http://127.0.0.1:11434/api/generate",
-
-            {
-
-                model: "phi3:mini",
-
-                prompt: `
-${PROMPT}
-
-Pregunta del estudiante:
-
-${pregunta}
-
-Responde directamente al estudiante como NeuroLearn AI.
-`,
-
-                stream: false,
-
-                keep_alive: "5m",
-
-                options: {
-
-                    temperature: 0.4,
-
-                    num_predict: 120
-
-                }
-
-            },
-
-            {
-
-                timeout: 300000
-
-            }
-
-        );
-
-        console.log("2️⃣ Ollama respondió.");
-
-        const respuesta = respuestaOllama.data.response;
-
-        console.log("✅ Respuesta recibida:");
-        console.log(respuesta);
-
-        // =========================================
-        // ENVIAR RESPUESTA AL CHAT
-        // =========================================
-
-        res.json({
-
-            respuesta: respuesta
-
-        });
-
-    }
-
-    catch (error) {
-
-        console.error("========================================");
-        console.error("❌ ERROR OLLAMA");
-        console.error("========================================");
-
-        if (error.response) {
-
-            console.error("Respuesta de Ollama:");
-            console.error(error.response.data);
-
-        }
-
-        else {
-
-            console.error(error.message);
-
-        }
-
-        res.status(500).json({
-
-            respuesta:
-                "❌ NeuroLearn AI no pudo obtener una respuesta de Ollama."
-
-        });
-
-    }
-
-});
-
-// =========================================
-// COMPROBAR SERVIDOR
-// =========================================
-
-app.get("/", (req, res) => {
-
-    res.send(`
-        <h2>🚀 NeuroLearn AI</h2>
-        <p>Servidor funcionando correctamente.</p>
-        <p>Modelo conectado: <b>Phi-3 Mini</b></p>
-    `);
-
-});
-
-// =========================================
-// INICIAR SERVIDOR
-// =========================================
-
-const PORT = 3000;
-
-app.listen(PORT, () => {
-
-    console.clear();
-
-    console.log("========================================");
-    console.log("🧠 NeuroLearn AI");
-    console.log("========================================");
-    console.log("✅ Servidor iniciado correctamente");
-    console.log("🌐 http://localhost:3000");
-    console.log("🤖 Modelo: Phi-3 Mini");
-    console.log("========================================");
-    console.log("Esperando preguntas...");
-    console.log("========================================");
-
-});*/
-
-/*const express = require("express");
-const cors = require("cors");
-const { OpenAI } = require("openai");
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-// Inicializar OpenAI usando la variable de entorno que pusimos en Render
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
-
-// =========================================
-// CONFIGURACIÓN DE NEUROLEARN AI
-// =========================================
-
-const PROMPT = `
-Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
-
-Tu objetivo es ayudar a los estudiantes a aprender.
-
-Reglas:
-- Explica de forma sencilla.
-- Usa lenguaje fácil de entender.
-- Da ejemplos cotidianos.
-- Si es matemática, muestra los pasos.
-- Si es ciencia, explica de forma clara.
-- Si es historia, resume los acontecimientos importantes.
-- Si el estudiante no entiende, explica nuevamente de otra manera.
-- Sé amable y motivador.
-- No uses respuestas innecesariamente largas.
-- Responde en un máximo aproximado de 120 palabras.
-`;
-
-// =========================================
-// RECIBIR PREGUNTA DEL CHAT
-// =========================================
-
-app.post("/preguntar", async (req, res) => {
-
-    console.log("========================================");
-    console.log("📨 Pregunta recibida:");
-    console.log(req.body.pregunta);
-    console.log("========================================");
-
-    const pregunta = req.body.pregunta;
-
-    if (!pregunta || pregunta.trim() === "") {
-        return res.json({
-            respuesta: "Por favor escribe una pregunta."
-        });
-    }
-
-    try {
-        console.log("1️⃣ Enviando petición a OpenAI...");
-
-        // Llamada oficial a los modelos de OpenAI (Usamos gpt-4o-mini que es el estándar rápido y económico)
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                { role: "system", content: PROMPT },
-                { role: "user", content: pregunta }
-            ],
-            temperature: 0.4,
-            max_tokens: 200
-        });
-
-        console.log("2️⃣ OpenAI respondió.");
-
-        const respuesta = response.choices[0].message.content;
-
-        console.log("✅ Respuesta recibida:");
-        console.log(respuesta);
-
-        // Enviar respuesta estructurada de vuelta al chat visual
-        res.json({
-            respuesta: respuesta
-        });
-
-    } catch (error) {
-        console.error("========================================");
-        console.error("❌ ERROR OPENAI");
-        console.error("========================================");
-        console.error(error.message);
-
-        res.status(500).json({
-            respuesta: "❌ NeuroLearn AI no pudo obtener una respuesta del servidor de Inteligencia Artificial."
-        });
-    }
-});
-
-// =========================================
-// COMPROBAR SERVIDOR
-// =========================================
-
-app.get("/", (req, res) => {
-    res.send(`
-        <h2>🚀 NeuroLearn AI</h2>
-        <p>Servidor funcionando correctamente.</p>
-        <p>Modelo conectado: <b>GPT-4o-Mini (OpenAI Cloud)</b></p>
-    `);
-});
-
-// =========================================
-// INICIAR SERVIDOR
-// =========================================
-
-// Usamos process.env.PORT porque Render asigna un puerto automático en internet
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-    console.log("========================================");
-    console.log("🧠 NeuroLearn AI en producción");
-    console.log(`✅ Servidor listo en el puerto ${PORT}`);
-    console.log("========================================");
-});*/
-
-/*const express = require("express");
-const cors = require("cors");
-const { OpenAI } = require("openai");
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-// Configuramos la librería para usar el camino gratuito de OpenRouter
-const openai = new OpenAI({
-    baseURL: "https://openrouter.ai",
-    apiKey: process.env.OPENAI_API_KEY
-});
-
-const PROMPT = `
-Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
-Reglas: Explica de forma sencilla, da ejemplos cotidianos y sé amable. Responde en un máximo de 120 palabras.
-`;
-
-app.post("/preguntar", async (req, res) => {
-    const pregunta = req.body.pregunta;
-    if (!pregunta || pregunta.trim() === "") {
-        return res.json({ respuesta: "Por favor escribe una pregunta." });
-    }
-
-    try {
-        console.log("1️⃣ Enviando petición a OpenRouter Gratis...");
-
-        // Usamos un modelo excelente que OpenRouter ofrece de forma 100% gratuita
-        const response = await openai.chat.completions.create({
-            model: "meta-llama/llama-3-8b-instruct:free",
-            messages: [
-                { role: "system", content: PROMPT },
-                { role: "user", content: pregunta }
-            ]
-        });
-
-        const respuesta = response.choices[0].message.content;
-        res.json({ respuesta: respuesta });
-
-    } catch (error) {
-        console.error("❌ ERROR OPENROUTER:", error.message);
-        res.status(500).json({ respuesta: "❌ Error en el servidor de IA gratuito." });
-    }
-});
-
-app.get("/", (req, res) => {
-    res.send(`<h2>🚀 NeuroLearn AI</h2><p>Servidor gratuito funcionando.</p>`);
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
-*/
-
 const express = require("express");
 const cors = require("cors");
 
 const app = express();
 
+const PORT = process.env.PORT || 10000;
+
 app.use(cors());
 app.use(express.json());
 
-const PROMPT = `
-Eres NeuroLearn AI, un profesor amigable para niños y adolescentes.
-Reglas: Explica de forma sencilla, da ejemplos cotidianos y sé amable. Responde en un máximo de 120 palabras.
-`;
 
-app.post("/preguntar", async (req, res) => {
-    const pregunta = req.body.pregunta;
-    if (!pregunta || pregunta.trim() === "") {
-        return res.json({ respuesta: "Por favor escribe una pregunta." });
-    }
-
-    try {
-        console.log("1️⃣ Enviando petición a Groq Gratis...");
-
-        // DIRECCIÓN OFICIAL CORREGIDA
-        const response = await fetch("https://groq.com", {          
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: "llama-3.1-8b-instant",
-                messages: [
-                    { role: "system", content: PROMPT },
-                    { role: "user", content: pregunta }
-                ]
-            })
-        });
-
-        if (!response.ok) {
-            const textoError = await response.text();
-            throw new Error(`Servidor de Groq respondió con código ${response.status}: ${textoError}`);
-        }
-
-        const data = await response.json();
-        console.log("2️⃣ Groq respondió.");
-
-        if (data && data.choices && data.choices[0] && data.choices[0].message) {
-            const respuestaIA = data.choices[0].message.content;
-            console.log("✅ Respuesta recibida:", respuestaIA);
-            return res.json({ respuesta: respuestaIA });
-        } else {
-            console.error("Respuesta extraña de Groq:", data);
-            throw new Error("No se encontró el mensaje en los datos.");
-        }
-
-    } catch (error) {
-        console.error("❌ ERROR GROQ:", error.message);
-        res.status(500).json({ respuesta: "❌ Error al procesar la respuesta de la IA gratuita." });
-    }
-});
+// ===============================
+// INICIO
+// ===============================
 
 app.get("/", (req, res) => {
-    res.send(`<h2>🚀 NeuroLearn AI</h2><p>Servidor Groq gratuito funcionando correctamente.</p>`);
+    res.status(200).json({
+        ok: true,
+        mensaje: "🧠 NeuroLearn AI funcionando correctamente"
+    });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Servidor listo en puerto ${PORT}`));
+
+// ===============================
+// SALUD DEL SERVIDOR
+// ===============================
+
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        ok: true,
+        servidor: "NeuroLearn AI"
+    });
+});
 
 
+// ===============================
+// CHAT CON GROQ
+// ===============================
+
+app.post("/preguntar", async (req, res) => {
+
+    try {
+
+        const pregunta = String(
+            req.body?.pregunta || ""
+        ).trim();
+
+
+        // Verificar pregunta
+
+        if (!pregunta) {
+
+            return res.status(400).json({
+                respuesta: "Escribí una pregunta."
+            });
+
+        }
+
+
+        // Verificar API KEY
+
+        if (!process.env.GROQ_API_KEY) {
+
+            console.error(
+                "❌ Falta GROQ_API_KEY en Render"
+            );
+
+            return res.status(500).json({
+                respuesta:
+                    "El servidor no tiene configurada la clave de IA."
+            });
+
+        }
+
+
+        console.log(
+            "📤 Enviando pregunta a Groq..."
+        );
+
+
+        // ===============================
+        // PETICIÓN A GROQ
+        // ===============================
+
+        const respuestaGroq = await fetch(
+            "https://api.groq.com/openai/v1/chat/completions",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":
+                        `Bearer ${process.env.GROQ_API_KEY}`
+                },
+
+                body: JSON.stringify({
+
+                    model: "openai/gpt-oss-20b",
+
+                    messages: [
+
+                        {
+                            role: "system",
+
+                            content:
+                                "Eres NeuroLearn AI, " +
+                                "un asistente educativo " +
+                                "diseñado para niños. " +
+                                "Responde siempre en español. " +
+                                "Explica las cosas de manera clara, " +
+                                "sencilla, amable y divertida. " +
+                                "Adapta tus explicaciones para que " +
+                                "sean fáciles de comprender."
+                        },
+
+                        {
+                            role: "user",
+
+                            content: pregunta
+                        }
+
+                    ],
+
+                    temperature: 0.7,
+
+                    max_completion_tokens: 1024
+
+                })
+            }
+        );
+
+
+        // Leer respuesta de Groq
+
+        const datos = await respuestaGroq.json();
+
+
+        console.log(
+            "📥 Respuesta de Groq:",
+            respuestaGroq.status
+        );
+
+
+        // ===============================
+        // ERROR DE GROQ
+        // ===============================
+
+        if (!respuestaGroq.ok) {
+
+            console.error(
+                "❌ Error Groq:",
+                datos
+            );
+
+            return res.status(502).json({
+
+                respuesta:
+                    "Groq no pudo responder en este momento."
+
+            });
+
+        }
+
+
+        // ===============================
+        // EXTRAER RESPUESTA
+        // ===============================
+
+        const contenido =
+            datos?.choices?.[0]?.message?.content;
+
+
+        if (!contenido) {
+
+            console.error(
+                "❌ Groq devolvió una respuesta inesperada:",
+                datos
+            );
+
+            return res.status(502).json({
+
+                respuesta:
+                    "La inteligencia artificial no devolvió una respuesta."
+
+            });
+
+        }
+
+
+        console.log(
+            "✅ Groq respondió correctamente"
+        );
+
+
+        // ===============================
+        // ENVIAR AL CHAT
+        // ===============================
+
+        res.json({
+
+            respuesta: contenido
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ ERROR /preguntar:",
+            error
+        );
+
+        res.status(500).json({
+
+            respuesta:
+                "Ocurrió un error en el servidor."
+
+        });
+
+    }
+
+});
+
+
+// ===============================
+// INICIAR SERVIDOR
+// ===============================
+
+app.listen(
+    PORT,
+    "0.0.0.0",
+    () => {
+
+        console.log(
+            `🧠 NeuroLearn AI escuchando en 0.0.0.0:${PORT}`
+        );
+
+    }
+);
