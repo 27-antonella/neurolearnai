@@ -5,37 +5,46 @@ const app = express();
 
 const PORT = process.env.PORT || 10000;
 
+// ==========================================
+// CONFIGURACIÓN
+// ==========================================
+
 app.use(cors());
 app.use(express.json());
 
 
-// ===============================
-// INICIO
-// ===============================
+// ==========================================
+// PÁGINA PRINCIPAL
+// ==========================================
 
 app.get("/", (req, res) => {
+
     res.status(200).json({
         ok: true,
         mensaje: "🧠 NeuroLearn AI funcionando correctamente"
     });
+
 });
 
 
-// ===============================
-// SALUD DEL SERVIDOR
-// ===============================
+// ==========================================
+// COMPROBAR SERVIDOR
+// ==========================================
 
 app.get("/health", (req, res) => {
+
     res.status(200).json({
         ok: true,
-        servidor: "NeuroLearn AI"
+        servidor: "NeuroLearn AI",
+        estado: "funcionando"
     });
+
 });
 
 
-// ===============================
+// ==========================================
 // CHAT CON GROQ
-// ===============================
+// ==========================================
 
 app.post("/preguntar", async (req, res) => {
 
@@ -46,7 +55,9 @@ app.post("/preguntar", async (req, res) => {
         ).trim();
 
 
-        // Verificar pregunta
+        // ------------------------------------------
+        // COMPROBAR PREGUNTA
+        // ------------------------------------------
 
         if (!pregunta) {
 
@@ -57,40 +68,53 @@ app.post("/preguntar", async (req, res) => {
         }
 
 
-        // Verificar API KEY
+        // ------------------------------------------
+        // COMPROBAR API KEY
+        // ------------------------------------------
 
         if (!process.env.GROQ_API_KEY) {
 
             console.error(
-                "❌ Falta GROQ_API_KEY en Render"
+                "❌ ERROR: GROQ_API_KEY no está configurada."
             );
 
             return res.status(500).json({
+
                 respuesta:
-                    "El servidor no tiene configurada la clave de IA."
+                    "El servidor no tiene configurada la clave de inteligencia artificial."
+
             });
 
         }
 
 
-        console.log(
-            "📤 Enviando pregunta a Groq..."
-        );
+        console.log("");
+        console.log("======================================");
+        console.log("📤 Enviando pregunta a Groq...");
+        console.log("Pregunta:", pregunta);
+        console.log("======================================");
 
 
-        // ===============================
+        // ==========================================
         // PETICIÓN A GROQ
-        // ===============================
+        // ==========================================
 
         const respuestaGroq = await fetch(
+
             "https://api.groq.com/openai/v1/chat/completions",
+
             {
+
                 method: "POST",
 
                 headers: {
-                    "Content-Type": "application/json",
+
+                    "Content-Type":
+                        "application/json",
+
                     "Authorization":
                         `Bearer ${process.env.GROQ_API_KEY}`
+
                 },
 
                 body: JSON.stringify({
@@ -103,14 +127,37 @@ app.post("/preguntar", async (req, res) => {
                             role: "system",
 
                             content:
-                                "Eres NeuroLearn AI, " +
-                                "un asistente educativo " +
-                                "diseñado para niños. " +
-                                "Responde siempre en español. " +
-                                "Explica las cosas de manera clara, " +
-                                "sencilla, amable y divertida. " +
-                                "Adapta tus explicaciones para que " +
-                                "sean fáciles de comprender."
+                                `
+Eres NeuroLearn AI.
+
+Eres un asistente educativo diseñado
+para ayudar a niños y adolescentes
+a aprender.
+
+Tu objetivo es explicar los temas
+de manera clara, sencilla, amable
+y divertida.
+
+Responde siempre en español.
+
+Utiliza ejemplos fáciles de entender.
+
+Si el niño pregunta algo relacionado
+con matemática, ciencias, historia,
+biología, animales, tecnología,
+programación, física, química,
+geografía o cualquier otro tema
+educativo, intenta explicarlo de
+forma apropiada para su edad.
+
+No inventes información.
+
+Si una explicación es complicada,
+divídela en pasos sencillos.
+
+Puedes utilizar emojis cuando ayuden
+a comprender mejor la explicación.
+`
                         },
 
                         {
@@ -126,45 +173,79 @@ app.post("/preguntar", async (req, res) => {
                     max_completion_tokens: 1024
 
                 })
+
             }
+
         );
 
 
-        // Leer respuesta de Groq
+        // ==========================================
+        // LEER RESPUESTA DE GROQ
+        // ==========================================
 
-        const datos = await respuestaGroq.json();
+        const textoRespuesta =
+            await respuestaGroq.text();
 
 
+        let datos;
+
+        try {
+
+            datos = JSON.parse(textoRespuesta);
+
+        } catch {
+
+            datos = {
+                respuesta_cruda: textoRespuesta
+            };
+
+        }
+
+
+        console.log("");
+        console.log("======================================");
+        console.log("📥 RESPUESTA DE GROQ");
+        console.log("Código:", respuestaGroq.status);
         console.log(
-            "📥 Respuesta de Groq:",
-            respuestaGroq.status
+            JSON.stringify(datos, null, 2)
         );
+        console.log("======================================");
 
 
-        // ===============================
-        // ERROR DE GROQ
-        // ===============================
+        // ==========================================
+        // SI GROQ DEVUELVE ERROR
+        // ==========================================
 
         if (!respuestaGroq.ok) {
 
+            console.error("");
             console.error(
-                "❌ Error Groq:",
-                datos
+                "❌ ERROR GROQ:",
+                respuestaGroq.status
+            );
+
+            console.error(
+                "Respuesta completa:",
+                JSON.stringify(
+                    datos,
+                    null,
+                    2
+                )
             );
 
             return res.status(502).json({
 
                 respuesta:
-                    "Groq no pudo responder en este momento."
+                    `Groq devolvió un error ${respuestaGroq.status}.`
 
             });
 
         }
 
 
-        // ===============================
-        // EXTRAER RESPUESTA
-        // ===============================
+        // ==========================================
+        // OBTENER RESPUESTA DE LA IA
+        // ==========================================
 
         const contenido =
             datos?.choices?.[0]?.message?.content;
@@ -173,47 +254,59 @@ app.post("/preguntar", async (req, res) => {
         if (!contenido) {
 
             console.error(
-                "❌ Groq devolvió una respuesta inesperada:",
-                datos
+                "❌ Groq no devolvió contenido."
             );
 
             return res.status(502).json({
 
                 respuesta:
-                    "La inteligencia artificial no devolvió una respuesta."
+                    "La inteligencia artificial no devolvió una respuesta válida."
 
             });
 
         }
 
 
+        console.log("");
         console.log(
-            "✅ Groq respondió correctamente"
+            "✅ Groq respondió correctamente."
         );
 
+        console.log(
+            "🤖 Respuesta:",
+            contenido
+        );
 
-        // ===============================
-        // ENVIAR AL CHAT
-        // ===============================
+        console.log("");
 
-        res.json({
+
+        // ==========================================
+        // ENVIAR RESPUESTA AL CHAT
+        // ==========================================
+
+        return res.json({
 
             respuesta: contenido
 
         });
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
+        console.error("");
         console.error(
-            "❌ ERROR /preguntar:",
-            error
+            "❌ ERROR EN /PREGUNTAR"
         );
 
-        res.status(500).json({
+        console.error(error);
+
+        console.error("");
+
+        return res.status(500).json({
 
             respuesta:
-                "Ocurrió un error en el servidor."
+                "Ocurrió un error en el servidor de NeuroLearn AI."
 
         });
 
@@ -222,18 +315,29 @@ app.post("/preguntar", async (req, res) => {
 });
 
 
-// ===============================
+// ==========================================
 // INICIAR SERVIDOR
-// ===============================
+// ==========================================
 
 app.listen(
+
     PORT,
+
     "0.0.0.0",
+
     () => {
 
+        console.log("");
         console.log(
-            `🧠 NeuroLearn AI escuchando en 0.0.0.0:${PORT}`
+            "🧠 NeuroLearn AI iniciado correctamente"
         );
 
+        console.log(
+            `🚀 Servidor escuchando en 0.0.0.0:${PORT}`
+        );
+
+        console.log("");
+
     }
+
 );
