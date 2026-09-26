@@ -3,175 +3,478 @@ const input = document.getElementById("texto");
 const escribiendo = document.getElementById("escribiendo");
 const botonEnviar = document.getElementById("btnEnviar");
 
-// Enviar con Enter
-input.addEventListener("keydown", function (e) {
 
-    if (e.key === "Enter") {
+// ==========================================
+// URL DEL SERVIDOR
+// ==========================================
 
-        e.preventDefault();
+const API_URL =
+    "https://neurolearnai-1.onrender.com";
 
-        enviar();
+
+// ==========================================
+// ENVIAR CON ENTER
+// ==========================================
+
+input.addEventListener(
+    "keydown",
+    function (e) {
+
+        if (e.key === "Enter") {
+
+            e.preventDefault();
+
+            enviar();
+
+        }
 
     }
+);
 
-});
 
-// Agregar mensaje al chat
+// ==========================================
+// LIMPIAR RESPUESTAS DE LA IA
+// ==========================================
+
+function limpiarRespuesta(texto) {
+
+    let limpio = String(texto);
+
+
+    // ------------------------------------------
+    // Eliminar negrita Markdown
+    // ------------------------------------------
+
+    limpio = limpio.replace(
+        /\\?\*\\?\*/g,
+        ""
+    );
+
+
+    // ------------------------------------------
+    // Eliminar cursiva Markdown
+    // ------------------------------------------
+
+    limpio = limpio.replace(
+        /\\?\*/g,
+        ""
+    );
+
+
+    // ------------------------------------------
+    // Eliminar títulos Markdown
+    // ------------------------------------------
+
+    limpio = limpio.replace(
+        /^#{1,6}\s*/gm,
+        ""
+    );
+
+
+    // ------------------------------------------
+    // Eliminar código inline
+    // ------------------------------------------
+
+    limpio = limpio.replace(
+        /`/g,
+        ""
+    );
+
+
+    // ------------------------------------------
+    // Eliminar algunos formatos
+    // ------------------------------------------
+
+    limpio = limpio.replace(
+        /__([^_]+)__/g,
+        "$1"
+    );
+
+
+    limpio = limpio.replace(
+        /_([^_]+)_/g,
+        "$1"
+    );
+
+
+    // ------------------------------------------
+    // Limpiar caracteres de escape
+    // ------------------------------------------
+
+    limpio = limpio.replace(
+        /\\([*_#`])/g,
+        "$1"
+    );
+
+
+    // ------------------------------------------
+    // Eliminar líneas con separadores Markdown
+    // ------------------------------------------
+
+    limpio = limpio.replace(
+        /^\s*[-*_]{3,}\s*$/gm,
+        ""
+    );
+
+
+    // ------------------------------------------
+    // Evitar demasiados saltos de línea
+    // ------------------------------------------
+
+    limpio = limpio.replace(
+        /\n{3,}/g,
+        "\n\n"
+    );
+
+
+    return limpio.trim();
+
+}
+
+
+// ==========================================
+// AGREGAR MENSAJE
+// ==========================================
+
 function agregarMensaje(texto, tipo) {
 
-    const mensaje = document.createElement("div");
+    const mensaje =
+        document.createElement("div");
 
-    mensaje.className = "mensaje " + tipo;
+    mensaje.className =
+        "mensaje " + tipo;
+
+
+    // ======================================
+    // MENSAJE DEL BOT
+    // ======================================
 
     if (tipo === "bot") {
 
-        mensaje.innerHTML = `
-            <img src="logo.png" class="avatar">
+        const avatar =
+            document.createElement("img");
 
-            <div class="burbuja">
+        avatar.src = "logo.png";
 
-                ${texto}
+        avatar.className =
+            "avatar";
 
-            </div>
-        `;
+        avatar.alt =
+            "NeuroLearn AI";
 
-    } else {
 
-        mensaje.innerHTML = `
-            <div class="burbuja">
+        const burbuja =
+            document.createElement("div");
 
-                ${texto}
+        burbuja.className =
+            "burbuja";
 
-            </div>
-        `;
+
+        // Limpiar texto recibido
+        const textoLimpio =
+            limpiarRespuesta(texto);
+
+
+        // Usamos textContent para que
+        // la respuesta sea solamente texto
+        burbuja.textContent =
+            textoLimpio;
+
+
+        mensaje.appendChild(
+            avatar
+        );
+
+        mensaje.appendChild(
+            burbuja
+        );
 
     }
 
-    mensajes.appendChild(mensaje);
 
-    mensajes.scrollTop = mensajes.scrollHeight;
+    // ======================================
+    // MENSAJE DEL USUARIO
+    // ======================================
+
+    else {
+
+        const burbuja =
+            document.createElement("div");
+
+        burbuja.className =
+            "burbuja";
+
+
+        burbuja.textContent =
+            texto;
+
+
+        mensaje.appendChild(
+            burbuja
+        );
+
+    }
+
+
+    // ======================================
+    // AGREGAR AL CHAT
+    // ======================================
+
+    mensajes.appendChild(
+        mensaje
+    );
+
+
+    // Bajar automáticamente
+    mensajes.scrollTop =
+        mensajes.scrollHeight;
 
 }
 
-// Mostrar/Ocultar "escribiendo"
+
+// ==========================================
+// MOSTRAR "NEUROLEARN AI ESTÁ PENSANDO"
+// ==========================================
+
 function mostrarEscribiendo() {
 
-    escribiendo.style.display = "flex";
+    escribiendo.style.display =
+        "flex";
 
-    mensajes.scrollTop = mensajes.scrollHeight;
+    mensajes.scrollTop =
+        mensajes.scrollHeight;
 
 }
+
+
+// ==========================================
+// OCULTAR "PENSANDO"
+// ==========================================
 
 function ocultarEscribiendo() {
 
-    escribiendo.style.display = "none";
+    escribiendo.style.display =
+        "none";
 
 }
-// Enviar pregunta a Ollama
+
+
+// ==========================================
+// ENVIAR PREGUNTA
+// ==========================================
+
 async function enviar() {
 
-    const pregunta = input.value.trim();
+    const pregunta =
+        input.value.trim();
 
-    if (pregunta === "") return;
 
-    // Mostrar inmediatamente el mensaje del usuario
-    agregarMensaje(pregunta, "user");
+    // No enviar vacío
+    if (pregunta === "") {
 
-    // Limpiar el cuadro de texto enseguida
+        return;
+
+    }
+
+
+    // --------------------------------------
+    // Mostrar pregunta del usuario
+    // --------------------------------------
+
+    agregarMensaje(
+        pregunta,
+        "user"
+    );
+
+
+    // Limpiar input
     input.value = "";
 
     input.focus();
 
+
     // Desactivar mientras responde
-    botonEnviar.disabled = true;
+    botonEnviar.disabled =
+        true;
 
-    input.disabled = true;
+    input.disabled =
+        true;
 
-    // Mostrar "pensando..."
+
+    // Mostrar indicador
     mostrarEscribiendo();
 
-   try {
 
-        const respuesta = await fetch(
-"https://neurolearnai-1.onrender.com/preguntar",
-   {
-                method: "POST",
+    try {
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
 
-                body: JSON.stringify({
-                    pregunta: pregunta
-                })
+        // ==================================
+        // ENVIAR AL SERVIDOR
+        // ==================================
 
-            }
+        const respuesta =
+            await fetch(
+
+                `${API_URL}/preguntar`,
+
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        pregunta:
+                            pregunta
+
+                    })
+
+                }
+
+            );
+
+
+        // ==================================
+        // LEER RESPUESTA
+        // ==================================
+
+        const datos =
+            await respuesta.json()
+                .catch(() => ({}));
+
+
+        console.log(
+            "Respuesta del servidor:",
+            datos
         );
 
 
-        const datos = await respuesta.json();
-        console.log(datos);
+        // ==================================
+        // ERROR DEL SERVIDOR
+        // ==================================
 
+        if (!respuesta.ok) {
+
+            throw new Error(
+
+                datos.respuesta ||
+                `Error del servidor: ${respuesta.status}`
+
+            );
+
+        }
+
+
+        // Ocultar indicador
         ocultarEscribiendo();
 
-        agregarMensaje(datos.respuesta, "bot");
+
+        // ==================================
+        // MOSTRAR RESPUESTA
+        // ==================================
+
+        agregarMensaje(
+
+            datos.respuesta ||
+            "No recibí una respuesta.",
+
+            "bot"
+
+        );
 
     }
+
 
     catch (error) {
 
-        console.error(error);
+        console.error(
+            "❌ Error:",
+            error
+        );
+
 
         ocultarEscribiendo();
 
+
         agregarMensaje(
-            "❌ No pude conectarme con NeuroLearn AI.",
+
+            "❌ No pude conectarme con NeuroLearn AI. Intentá nuevamente.",
+
             "bot"
+
         );
 
     }
 
-    botonEnviar.disabled = false;
 
-    input.disabled = false;
+    finally {
 
-    input.focus();
+        // Reactivar controles
+        botonEnviar.disabled =
+            false;
 
-}
-// ===============================
-// NeuroLearn AI
-// Funciones auxiliares
-// ===============================
-
-// Desplazar siempre al último mensaje
-function bajarChat() {
-
-    mensajes.scrollTo({
-        top: mensajes.scrollHeight,
-        behavior: "smooth"
-    });
-
-}
-
-// Enfocar el cuadro de texto al iniciar
-window.addEventListener("load", () => {
-
-    input.focus();
-
-    bajarChat();
-
-});
-
-// Mantener el foco cuando el usuario haga clic en el chat
-document.addEventListener("click", () => {
-
-    if (!input.disabled) {
+        input.disabled =
+            false;
 
         input.focus();
 
     }
 
-});
+}
 
-// Permitir enviar haciendo clic en el botón
-botonEnviar.addEventListener("click", enviar);
+
+// ==========================================
+// BAJAR CHAT
+// ==========================================
+
+function bajarChat() {
+
+    mensajes.scrollTo({
+
+        top:
+            mensajes.scrollHeight,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+
+// ==========================================
+// AL CARGAR LA PÁGINA
+// ==========================================
+
+window.addEventListener(
+
+    "load",
+
+    () => {
+
+        input.focus();
+
+        bajarChat();
+
+    }
+
+);
+
+
+// ==========================================
+// BOTÓN ENVIAR
+// ==========================================
+
+botonEnviar.addEventListener(
+
+    "click",
+
+    enviar
+
+);

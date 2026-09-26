@@ -91,7 +91,6 @@ app.post("/preguntar", async (req, res) => {
         console.log("");
         console.log("======================================");
         console.log("📤 Enviando pregunta a Groq...");
-        console.log("Pregunta:", pregunta);
         console.log("======================================");
 
 
@@ -126,8 +125,7 @@ app.post("/preguntar", async (req, res) => {
                         {
                             role: "system",
 
-                            content:
-                                `
+                            content: `
 Eres NeuroLearn AI.
 
 Eres un asistente educativo diseñado
@@ -142,21 +140,63 @@ Responde siempre en español.
 
 Utiliza ejemplos fáciles de entender.
 
-Si el niño pregunta algo relacionado
-con matemática, ciencias, historia,
-biología, animales, tecnología,
-programación, física, química,
-geografía o cualquier otro tema
-educativo, intenta explicarlo de
-forma apropiada para su edad.
+Adapta las explicaciones para que
+sean apropiadas para niños.
 
-No inventes información.
+Si el tema es complicado, divídelo
+en pasos sencillos.
 
-Si una explicación es complicada,
-divídela en pasos sencillos.
+Utiliza ejemplos cotidianos cuando
+ayuden a comprender mejor.
 
 Puedes utilizar emojis cuando ayuden
-a comprender mejor la explicación.
+a comprender la explicación.
+
+IMPORTANTE SOBRE EL FORMATO:
+
+Escribe únicamente texto limpio y natural.
+
+NO utilices Markdown.
+
+NO utilices dos asteriscos para negrita.
+
+NO utilices un asterisco para cursiva.
+
+NO utilices símbolos como:
+
+**
+*
+#
+###
+\\*\\*
+
+NO utilices títulos con #.
+
+NO utilices bloques de código.
+
+NO utilices etiquetas HTML.
+
+NO escribas código de formato.
+
+No pongas palabras entre asteriscos.
+
+Utiliza solamente texto normal,
+párrafos, listas simples y emojis.
+
+Por ejemplo, escribe:
+
+La Revolución Francesa comenzó
+en 1789 y produjo grandes cambios
+políticos y sociales.
+
+NO escribas:
+
+La **Revolución Francesa** comenzó
+en 1789.
+
+La respuesta debe verse como una
+conversación natural entre NeuroLearn AI
+y un niño.
 `
                         },
 
@@ -202,30 +242,28 @@ a comprender mejor la explicación.
         }
 
 
-        console.log("");
-        console.log("======================================");
-        console.log("📥 RESPUESTA DE GROQ");
-        console.log("Código:", respuestaGroq.status);
+        // ==========================================
+        // MOSTRAR INFORMACIÓN DEL RESULTADO
+        // ==========================================
+
         console.log(
-            JSON.stringify(datos, null, 2)
+            "📥 Respuesta de Groq:",
+            respuestaGroq.status
         );
-        console.log("======================================");
 
 
         // ==========================================
-        // SI GROQ DEVUELVE ERROR
+        // ERROR DE GROQ
         // ==========================================
 
         if (!respuestaGroq.ok) {
 
-            console.error("");
             console.error(
                 "❌ ERROR GROQ:",
                 respuestaGroq.status
             );
 
             console.error(
-                "Respuesta completa:",
                 JSON.stringify(
                     datos,
                     null,
@@ -236,7 +274,7 @@ a comprender mejor la explicación.
             return res.status(502).json({
 
                 respuesta:
-                    `Groq devolvió un error ${respuestaGroq.status}.`
+                    "La inteligencia artificial no pudo responder en este momento."
 
             });
 
@@ -244,7 +282,7 @@ a comprender mejor la explicación.
 
 
         // ==========================================
-        // OBTENER RESPUESTA DE LA IA
+        // OBTENER RESPUESTA
         // ==========================================
 
         const contenido =
@@ -267,17 +305,9 @@ a comprender mejor la explicación.
         }
 
 
-        console.log("");
         console.log(
             "✅ Groq respondió correctamente."
         );
-
-        console.log(
-            "🤖 Respuesta:",
-            contenido
-        );
-
-        console.log("");
 
 
         // ==========================================
@@ -294,19 +324,15 @@ a comprender mejor la explicación.
 
     catch (error) {
 
-        console.error("");
         console.error(
-            "❌ ERROR EN /PREGUNTAR"
+            "❌ ERROR EN /preguntar:",
+            error
         );
-
-        console.error(error);
-
-        console.error("");
 
         return res.status(500).json({
 
             respuesta:
-                "Ocurrió un error en el servidor de NeuroLearn AI."
+                "Ocurrió un error en NeuroLearn AI."
 
         });
 
