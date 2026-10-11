@@ -1,2 +1,4 @@
-servidor/.env
-servidor/node_modules/
+.env
+.env.*
+!.env.example
+node_modules/
