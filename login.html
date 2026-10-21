@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión - NeuroLearn AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #cfefff, #eef9ff);
+        }
+
+        .tarjeta {
+            width: 100%;
+            max-width: 360px;
+            padding: 30px 26px;
+            background: white;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+        }
+
+        .robot {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #0084ff;
+            font-size: 27px;
+            margin: 0 0 8px;
+        }
+
+        .subtitulo {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            font-weight: bold;
+            margin: 14px 0 6px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #b9ddff;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: 2px solid #0084ff;
+            border-color: transparent;
+        }
+
+        button, .enlace {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            background: #0084ff;
+            color: white;
+        }
+
+        button:hover {
+            background: #006ad6;
+        }
+
+        button:disabled {
+            opacity: .65;
+            cursor: wait;
+        }
+
+        .enlace {
+            background: #e8f3ff;
+            color: #0077cc;
+        }
+
+        #mensaje {
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error {
+            color: #c62828;
+        }
+
+        .exito {
+            color: #218838;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 18px;
+            color: #0077cc;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="tarjeta">
+        <div class="robot">🤖</div>
+
+        <h1>NeuroLearn AI</h1>
+        <p class="subtitulo">¡Qué bueno verte de nuevo!</p>
+
+        <form id="formLogin">
+            <label for="correo">Correo electrónico</label>
+            <input
+                type="email"
+                id="correo"
+                name="correo"
+                autocomplete="email"
+                placeholder="tu@correo.com"
+                required
+            >
+
+            <label for="contrasena">Contraseña</label>
+            <input
+                type="password"
+                id="contrasena"
+                name="contrasena"
+                autocomplete="current-password"
+                placeholder="Tu contraseña"
+                required
+            >
+
+            <button type="submit" id="btnLogin">
+                Iniciar sesión
+            </button>
+        </form>
+
+        <p id="mensaje" role="status" aria-live="polite"></p>
+
+        <a class="enlace" href="perfiles.html">
+            Crear una cuenta nueva
+        </a>
+
+        <a class="volver" href="index.html">
+            ← Volver al inicio
+        </a>
+    </main>
+
+    <script src="js/login.js"></script>
+</body>
+</html>

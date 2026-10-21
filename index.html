@@ -1,121 +1,164 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeuroLearn AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroLearn AI</title>
 
-<style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, sans-serif;
-}
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(to bottom, #cfefff, #eef9ff);
+        }
 
-body{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:linear-gradient(to bottom,#cfefff,#eef9ff);
-}
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 360px;
+            padding: 30px 28px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
 
-.card{
-background:white;
-width:450px;
-padding:35px;
-border-radius:25px;
-text-align:center;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-}
+        .logo {
+            font-size: 68px;
+            margin-bottom: 12px;
+        }
 
-.logo{
-font-size:90px;
-margin-bottom:15px;
-}
+        h1 {
+            color: #0084ff;
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
 
-h1{
-color:#0084ff;
-margin-bottom:10px;
-}
+        .sub {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
 
-.sub{
-color:#666;
-margin-bottom:25px;
-}
+        .robot {
+            font-size: 55px;
+            margin-bottom: 18px;
+            animation: flotar 3s ease-in-out infinite;
+        }
 
-.robot{
-font-size:70px;
-margin-bottom:20px;
-animation:flotar 3s infinite;
-}
+        @keyframes flotar {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+        }
 
-@keyframes flotar{
-0%{transform:translateY(0);}
-50%{transform:translateY(-10px);}
-100%{transform:translateY(0);}
-}
+        .boton {
+            display: block;
+            width: 100%;
+            padding: 13px 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 13px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
 
-button{
-width:100%;
-padding:15px;
-margin-top:10px;
-border:none;
-border-radius:15px;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
-}
+        .boton:hover {
+            transform: translateY(-2px);
+        }
 
-.empezar{
-background:#0084ff;
-color:white;
-}
+        .empezar {
+            background: #0084ff;
+            color: white;
+        }
 
-.empezar:hover{
-background:#006ad6;
-}
+        .empezar:hover {
+            background: #006ad6;
+        }
 
-.profesor{
-background:#4CAF50;
-color:white;
-}
+        .registro {
+            background: #e8f3ff;
+            color: #0077cc;
+            border: 1px solid #b9ddff;
+        }
 
-.profesor:hover{
-background:#388E3C;
-}
+        .registro:hover {
+            background: #d7eaff;
+        }
 
-</style>
+        .login {
+            background: #7c55d9;
+            color: white;
+        }
 
+        .login:hover {
+            background: #6440bd;
+        }
+
+        .profesor {
+            background: #4caf50;
+            color: white;
+        }
+
+        .profesor:hover {
+            background: #388e3c;
+        }
+
+        @media (max-width: 400px) {
+            .card {
+                padding: 25px 22px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <main class="card">
 
-<div class="card">
+        <div class="logo">🤖</div>
 
-<div class="logo">🤖</div>
+        <h1>NeuroLearn AI</h1>
 
-<h1>NeuroLearn AI</h1>
+        <p class="sub">Tu amigo para aprender</p>
 
-<p class="sub">Tu amigo para aprender</p>
+        <div class="robot">🧠🤖</div>
 
-<div class="robot">🧠🤖</div>
+        <a class="boton empezar" href="aprendizaje.html">
+            Empezar
+        </a>
 
-<button
-class="empezar"
-onclick="window.location.href='perfiles.html'">
-Empezar
-</button>
+        <a class="boton login" href="login.html">
+            Iniciar sesión
+        </a>
 
-<button
-class="profesor"
-onclick="window.location.href='padre.html'">
-Soy padre/profesor
-</button>
+        <a class="boton registro" href="perfiles.html">
+            Registrarte
+        </a>
 
-</div>
+        <a class="boton profesor" href="padre.html">
+            Soy padre/profesor
+        </a>
 
+    </main>
 </body>
 </html>
