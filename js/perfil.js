@@ -1,5 +1,4 @@
-
-const API_URL = "https://neurolearnai-1.onrender.com";
+const API_URL = "https://neurolearnai-clit.onrender.com";
 
 async function guardarPerfil() {
     const nombre = document.getElementById("nombre").value.trim();

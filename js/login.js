@@ -1,5 +1,5 @@
 
-const API_URL = "https://neurolearnai-1.onrender.com";
+const API_URL = "https://neurolearnai-clit.onrender.com";
 
 const formulario = document.getElementById("formLogin");
 const campoCorreo = document.getElementById("correo");
