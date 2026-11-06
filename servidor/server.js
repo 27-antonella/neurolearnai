@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 
 if (!process.env.DATABASE_URL) {
-    throw new Error("❌ DATABASE_URL no está configurada en .env");
+    throw new Error("DATABASE_URL no está configurada.");
 }
 
 const pool = new Pool({
@@ -125,6 +125,7 @@ app.get("/health", async (req, res) => {
             base_de_datos: "PostgreSQL conectada",
             estado: "funcionando"
         });
+
     } catch (error) {
         console.error("Error en health check:", error.message);
 
@@ -402,13 +403,17 @@ app.get("/historial/:usuarioId", async (req, res) => {
 });
 
 // ==================================================
-// CHAT CON GROQ
+// CHAT CON GROQ Y MEMORIA
 // ==================================================
 
 app.post("/preguntar", async (req, res) => {
     try {
         const pregunta = String(req.body?.pregunta || "").trim();
         const usuarioId = req.body?.usuarioId || null;
+
+        const historialRecibido = Array.isArray(req.body?.historial)
+            ? req.body.historial
+            : [];
 
         if (!pregunta) {
             return res.status(400).json({
@@ -424,7 +429,22 @@ app.post("/preguntar", async (req, res) => {
             });
         }
 
+        // Filtrar y limitar los mensajes anteriores.
+        const historial = historialRecibido
+            .filter(mensaje =>
+                mensaje &&
+                ["user", "assistant"].includes(mensaje.role) &&
+                typeof mensaje.content === "string" &&
+                mensaje.content.trim() !== ""
+            )
+            .slice(-12)
+            .map(mensaje => ({
+                role: mensaje.role,
+                content: mensaje.content.slice(0, 4000)
+            }));
+
         console.log("📤 Enviando pregunta a Groq...");
+        console.log("🧠 Mensajes de contexto:", historial.length);
 
         const respuestaGroq = await fetch(
             "https://api.groq.com/openai/v1/chat/completions",
@@ -444,7 +464,7 @@ Eres NeuroLearn AI, un asistente educativo diseñado para ayudar a niños y adol
 
 Responde siempre en español, de manera clara, amable, paciente y educativa.
 
-Explica los temas con profundidad suficiente, pero utilizando palabras fáciles de comprender.
+Explica los temas con profundidad suficiente, utilizando palabras fáciles de comprender.
 
 Adapta las explicaciones a la edad y al nivel de comprensión de los niños.
 
@@ -456,13 +476,19 @@ No des respuestas excesivamente cortas si el tema necesita una explicación más
 
 Cuando corresponda, agrega curiosidades y ejemplos prácticos.
 
-Si el niño hace una pregunta de seguimiento, continúa la explicación teniendo en cuenta el contexto de la conversación.
+MEMORIA DE CONVERSACIÓN:
+Utiliza los mensajes anteriores para comprender el contexto.
+Si el niño pregunta "¿por qué?", "¿cómo?", "¿y eso?" o "¿para qué sirve?", entiende a qué tema se refiere utilizando el historial.
+Continúa las explicaciones sin pedirle que repita información que ya proporcionó.
 
 Puedes utilizar emojis con moderación.
 
-Escribe en texto natural y evita utilizar Markdown, HTML o bloques de código.
+Escribe en texto natural y evita utilizar HTML o bloques de código.
 `
                         },
+
+                        ...historial,
+
                         {
                             role: "user",
                             content: pregunta
@@ -502,7 +528,7 @@ Escribe en texto natural y evita utilizar Markdown, HTML o bloques de código.
 
         console.log("✅ Groq respondió correctamente.");
 
-        // Guardar consulta si hay un usuario identificado.
+        // Mantener el guardado anterior si hay un usuario identificado.
         if (usuarioId) {
             try {
                 await pool.query(
