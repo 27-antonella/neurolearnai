@@ -4,233 +4,180 @@ const input = document.getElementById("texto");
 const escribiendo = document.getElementById("escribiendo");
 const botonEnviar = document.getElementById("btnEnviar");
 
-// ==================================================
-// URL DEL SERVIDOR
-// ==================================================
-
 const API_URL = "https://neurolearnai-clit.onrender.com";
-
-// ==================================================
-// MEMORIA DE LA CONVERSACIÓN
-// ==================================================
-
-// Aquí se guardan los mensajes mientras el chat esté abierto.
-let historialConversacion = [];
-
-// Máximo de mensajes anteriores que enviamos a la IA.
 const MAX_MENSAJES_MEMORIA = 12;
 
-// ==================================================
-// ENVIAR CON ENTER
-// ==================================================
+let historialConversacion = [];
+let enviando = false;
 
-input.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        enviar();
+// Comprobar que existen los elementos del chat.
+if (!mensajes || !input || !escribiendo || !botonEnviar) {
+    console.error("NeuroLearn AI: faltan elementos HTML del chat.");
+} else {
+
+    // Enviar con Enter.
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            enviar();
+        }
+    });
+
+    // Botón enviar.
+    botonEnviar.addEventListener("click", enviar);
+
+    // Limpiar formato Markdown básico.
+    function limpiarRespuesta(texto) {
+        return String(texto ?? "")
+            .replace(/\*\*(.*?)\*\*/gs, "$1")
+            .replace(/\*(.*?)\*/gs, "$1")
+            .replace(/^#{1,6}\s*/gm, "")
+            .replace(/`/g, "")
+            .replace(/__([^_]+)__/g, "$1")
+            .replace(/_([^_]+)_/g, "$1")
+            .replace(/^\s*[-*_]{3,}\s*$/gm, "")
+            .replace(/\n{3,}/g, "\n\n")
+            .trim();
     }
-});
 
-// ==================================================
-// LIMPIAR RESPUESTAS DE LA IA
-// ==================================================
+    // Mostrar mensajes de forma segura.
+    function agregarMensaje(texto, tipo) {
+        const mensaje = document.createElement("div");
+        mensaje.className = "mensaje " + tipo;
 
-function limpiarRespuesta(texto) {
-    let limpio = String(texto);
+        if (tipo === "bot") {
+            const avatar = document.createElement("img");
+            avatar.src = "logo.png";
+            avatar.className = "avatar";
+            avatar.alt = "NeuroLearn AI";
+            avatar.onerror = () => avatar.remove();
 
-    limpio = limpio.replace(/\*\*(.*?)\*\*/g, "$1");
-    limpio = limpio.replace(/\*(.*?)\*/g, "$1");
-    limpio = limpio.replace(/^#{1,6}\s*/gm, "");
-    limpio = limpio.replace(/`/g, "");
-    limpio = limpio.replace(/__([^_]+)__/g, "$1");
-    limpio = limpio.replace(/_([^_]+)_/g, "$1");
-    limpio = limpio.replace(/\\([*_#`])/g, "$1");
-    limpio = limpio.replace(/^\s*[-*_]{3,}\s*$/gm, "");
-    limpio = limpio.replace(/\n{3,}/g, "\n\n");
-
-    return limpio.trim();
-}
-
-// ==================================================
-// AGREGAR MENSAJE
-// ==================================================
-
-function agregarMensaje(texto, tipo) {
-    const mensaje = document.createElement("div");
-    mensaje.className = "mensaje " + tipo;
-
-    if (tipo === "bot") {
-        const avatar = document.createElement("img");
-
-        avatar.src = "logo.png";
-        avatar.className = "avatar";
-        avatar.alt = "NeuroLearn AI";
+            mensaje.appendChild(avatar);
+        }
 
         const burbuja = document.createElement("div");
         burbuja.className = "burbuja";
-        burbuja.textContent = limpiarRespuesta(texto);
-
-        mensaje.appendChild(avatar);
-        mensaje.appendChild(burbuja);
-
-    } else {
-        const burbuja = document.createElement("div");
-
-        burbuja.className = "burbuja";
-        burbuja.textContent = texto;
+        burbuja.textContent = tipo === "bot"
+            ? limpiarRespuesta(texto)
+            : texto;
 
         mensaje.appendChild(burbuja);
+        mensajes.appendChild(mensaje);
+
+        bajarChat();
     }
 
-    mensajes.appendChild(mensaje);
-
-    mensajes.scrollTop = mensajes.scrollHeight;
-}
-
-// ==================================================
-// GUARDAR MENSAJES EN LA MEMORIA
-// ==================================================
-
-function guardarEnMemoria(pregunta, respuesta) {
-    historialConversacion.push({
-        role: "user",
-        content: pregunta
-    });
-
-    historialConversacion.push({
-        role: "assistant",
-        content: respuesta
-    });
-
-    // Conservar solamente los últimos 12 mensajes.
-    historialConversacion =
-        historialConversacion.slice(-MAX_MENSAJES_MEMORIA);
-}
-
-// ==================================================
-// MOSTRAR "NEUROLEARN AI ESTÁ PENSANDO"
-// ==================================================
-
-function mostrarEscribiendo() {
-    escribiendo.style.display = "flex";
-
-    mensajes.scrollTop = mensajes.scrollHeight;
-}
-
-// ==================================================
-// OCULTAR "PENSANDO"
-// ==================================================
-
-function ocultarEscribiendo() {
-    escribiendo.style.display = "none";
-}
-
-// ==================================================
-// ENVIAR PREGUNTA
-// ==================================================
-
-async function enviar() {
-    const pregunta = input.value.trim();
-
-    if (pregunta === "") {
-        return;
-    }
-
-    // Mostrar pregunta del usuario.
-    agregarMensaje(pregunta, "user");
-
-    // Limpiar input.
-    input.value = "";
-    input.focus();
-
-    // Desactivar controles.
-    botonEnviar.disabled = true;
-    input.disabled = true;
-
-    mostrarEscribiendo();
-
-    try {
-        // Obtener el historial anterior a esta pregunta.
-        const historialAnterior = [...historialConversacion];
-
-        // Enviar pregunta y memoria al servidor.
-        const respuesta = await fetch(`${API_URL}/preguntar`, {
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                pregunta: pregunta,
-                historial: historialAnterior
-            })
-        });
-
-        const datos = await respuesta.json().catch(() => ({}));
-
-        console.log("Respuesta del servidor:", datos);
-
-        if (!respuesta.ok) {
-            throw new Error(
-                datos.respuesta ||
-                `Error del servidor: ${respuesta.status}`
-            );
-        }
-
-        if (!datos.respuesta) {
-            throw new Error("El servidor no devolvió una respuesta.");
-        }
-
-        // Ocultar indicador.
-        ocultarEscribiendo();
-
-        // Mostrar respuesta de la IA.
-        agregarMensaje(datos.respuesta, "bot");
-
-        // Guardar pregunta y respuesta en la memoria.
-        guardarEnMemoria(pregunta, datos.respuesta);
-
-    } catch (error) {
-        console.error("❌ Error:", error);
-
-        ocultarEscribiendo();
-
-        agregarMensaje(
-            "❌ No pude conectarme con NeuroLearn AI. Intentá nuevamente.",
-            "bot"
+    // Mantener memoria temporal.
+    function guardarEnMemoria(pregunta, respuesta) {
+        historialConversacion.push(
+            { role: "user", content: pregunta },
+            { role: "assistant", content: respuesta }
         );
 
-    } finally {
-        // Reactivar controles.
-        botonEnviar.disabled = false;
-        input.disabled = false;
-        input.focus();
+        historialConversacion =
+            historialConversacion.slice(-MAX_MENSAJES_MEMORIA);
     }
-}
 
-// ==================================================
-// BAJAR CHAT
-// ==================================================
+    function mostrarEscribiendo() {
+        escribiendo.style.display = "flex";
+        bajarChat();
+    }
 
-function bajarChat() {
-    mensajes.scrollTo({
-        top: mensajes.scrollHeight,
-        behavior: "smooth"
+    function ocultarEscribiendo() {
+        escribiendo.style.display = "none";
+    }
+
+    // Enviar pregunta al servidor.
+    async function enviar() {
+        if (enviando) return;
+
+        const pregunta = input.value.trim();
+
+        if (!pregunta) return;
+
+        enviando = true;
+        agregarMensaje(pregunta, "user");
+
+        input.value = "";
+        input.disabled = true;
+        botonEnviar.disabled = true;
+
+        mostrarEscribiendo();
+
+        try {
+            const respuesta = await fetch(`${API_URL}/preguntar`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    pregunta,
+                    historial: historialConversacion
+                })
+            });
+
+            const datos = await respuesta.json();
+
+            console.log("Respuesta del servidor:", datos);
+
+            if (!respuesta.ok) {
+                throw new Error(
+                    datos.error ||
+                    datos.respuesta ||
+                    datos.mensaje ||
+                    `Error HTTP ${respuesta.status}`
+                );
+            }
+
+            if (
+                typeof datos.respuesta !== "string" ||
+                !datos.respuesta.trim()
+            ) {
+                throw new Error("El servidor devolvió una respuesta vacía.");
+            }
+
+            agregarMensaje(datos.respuesta, "bot");
+
+            guardarEnMemoria(pregunta, datos.respuesta);
+
+        } catch (error) {
+            console.error("Error en NeuroLearn AI:", error);
+
+            let mensajeError =
+                "No pude obtener una respuesta. Intentá nuevamente.";
+
+            if (error instanceof TypeError) {
+                mensajeError =
+                    "No pude conectar con el servidor. Comprobá tu conexión a Internet o el estado de Render.";
+            } else if (error.message) {
+                mensajeError = error.message;
+            }
+
+            agregarMensaje("⚠️ " + mensajeError, "bot");
+
+        } finally {
+            ocultarEscribiendo();
+
+            enviando = false;
+            input.disabled = false;
+            botonEnviar.disabled = false;
+            input.focus();
+        }
+    }
+
+    // Bajar al último mensaje.
+    function bajarChat() {
+        mensajes.scrollTo({
+            top: mensajes.scrollHeight,
+            behavior: "smooth"
+        });
+    }
+
+    // Inicialización.
+    window.addEventListener("load", () => {
+        input.focus();
+        bajarChat();
     });
+
+    ocultarEscribiendo();
 }
-
-// ==================================================
-// AL CARGAR LA PÁGINA
-// ==================================================
-
-window.addEventListener("load", () => {
-    input.focus();
-    bajarChat();
-});
-
-// ==================================================
-// BOTÓN ENVIAR
-// ==================================================
-
-botonEnviar.addEventListener("click", enviar);
