@@ -4,7 +4,7 @@ const input = document.getElementById("texto");
 const escribiendo = document.getElementById("escribiendo");
 const botonEnviar = document.getElementById("btnEnviar");
 
-const API_URL = "https://neurolearnai-clit.onrender.com";
+const API_URL = "https://neurolearnai-1.onrender.com";
 const MAX_MENSAJES_MEMORIA = 12;
 
 let historialConversacion = [];
@@ -47,7 +47,7 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
 
         if (tipo === "bot") {
             const avatar = document.createElement("img");
-            avatar.src = "logo.png";
+            avatar.src = "img/robot.png";
             avatar.className = "avatar";
             avatar.alt = "NeuroLearn AI";
             avatar.onerror = () => avatar.remove();
