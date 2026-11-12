@@ -6,16 +6,35 @@ const botonEnviar = document.getElementById("btnEnviar");
 
 const API_URL = "https://neurolearnai-1.onrender.com";
 const MAX_MENSAJES_MEMORIA = 12;
+const CLAVE_MEMORIA = "neurolearn_historial_v1";
 
 let historialConversacion = [];
 let enviando = false;
 
-// Comprobar que existen los elementos del chat.
+// Recuperar memoria si se actualiza la página.
+try {
+    const memoriaGuardada = sessionStorage.getItem(CLAVE_MEMORIA);
+
+    if (memoriaGuardada) {
+        const historial = JSON.parse(memoriaGuardada);
+
+        if (Array.isArray(historial)) {
+            historialConversacion = historial.filter(mensaje =>
+                mensaje &&
+                ["user", "assistant"].includes(mensaje.role) &&
+                typeof mensaje.content === "string"
+            ).slice(-MAX_MENSAJES_MEMORIA);
+        }
+    }
+} catch (error) {
+    console.error("No se pudo recuperar la memoria:", error);
+    historialConversacion = [];
+}
+
 if (!mensajes || !input || !escribiendo || !botonEnviar) {
     console.error("NeuroLearn AI: faltan elementos HTML del chat.");
 } else {
 
-    // Enviar con Enter.
     input.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
@@ -23,10 +42,8 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
         }
     });
 
-    // Botón enviar.
     botonEnviar.addEventListener("click", enviar);
 
-    // Limpiar formato Markdown básico.
     function limpiarRespuesta(texto) {
         return String(texto ?? "")
             .replace(/\*\*(.*?)\*\*/gs, "$1")
@@ -40,7 +57,6 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
             .trim();
     }
 
-    // Mostrar mensajes de forma segura.
     function agregarMensaje(texto, tipo) {
         const mensaje = document.createElement("div");
         mensaje.className = "mensaje " + tipo;
@@ -67,7 +83,6 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
         bajarChat();
     }
 
-    // Mantener memoria temporal.
     function guardarEnMemoria(pregunta, respuesta) {
         historialConversacion.push(
             { role: "user", content: pregunta },
@@ -76,6 +91,15 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
 
         historialConversacion =
             historialConversacion.slice(-MAX_MENSAJES_MEMORIA);
+
+        try {
+            sessionStorage.setItem(
+                CLAVE_MEMORIA,
+                JSON.stringify(historialConversacion)
+            );
+        } catch (error) {
+            console.error("No se pudo guardar la memoria:", error);
+        }
     }
 
     function mostrarEscribiendo() {
@@ -87,7 +111,6 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
         escribiendo.style.display = "none";
     }
 
-    // Enviar pregunta al servidor.
     async function enviar() {
         if (enviando) return;
 
@@ -96,6 +119,7 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
         if (!pregunta) return;
 
         enviando = true;
+
         agregarMensaje(pregunta, "user");
 
         input.value = "";
@@ -105,14 +129,22 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
         mostrarEscribiendo();
 
         try {
+            // Enviar el historial anterior junto con la nueva pregunta.
+            const historialParaEnviar = [...historialConversacion];
+
+            console.log(
+                "🧠 Mensajes enviados como memoria:",
+                historialParaEnviar.length
+            );
+
             const respuesta = await fetch(`${API_URL}/preguntar`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    pregunta,
-                    historial: historialConversacion
+                    pregunta: pregunta,
+                    historial: historialParaEnviar
                 })
             });
 
@@ -138,6 +170,7 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
 
             agregarMensaje(datos.respuesta, "bot");
 
+            // Guardar la conversación solamente si hubo respuesta correcta.
             guardarEnMemoria(pregunta, datos.respuesta);
 
         } catch (error) {
@@ -148,7 +181,7 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
 
             if (error instanceof TypeError) {
                 mensajeError =
-                    "No pude conectar con el servidor. Comprobá tu conexión a Internet o el estado de Render.";
+                    "No pude conectar con el servidor. Comprobá tu conexión o el estado de Render.";
             } else if (error.message) {
                 mensajeError = error.message;
             }
@@ -165,7 +198,6 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
         }
     }
 
-    // Bajar al último mensaje.
     function bajarChat() {
         mensajes.scrollTo({
             top: mensajes.scrollHeight,
@@ -173,7 +205,6 @@ if (!mensajes || !input || !escribiendo || !botonEnviar) {
         });
     }
 
-    // Inicialización.
     window.addEventListener("load", () => {
         input.focus();
         bajarChat();
